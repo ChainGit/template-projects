@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Class-Path: jsqlparser-0.9.5.jar jboss-logging-3.3.1.Final.jar spring-
+ boot-configuration-processor-1.5.6.RELEASE.jar logback-classic-1.1.11
+ .jar chain-utils-latest.jar spring-boot-starter-1.5.6.RELEASE.jar spr
+ ing-jdbc-4.3.10.RELEASE.jar spring-boot-starter-logging-1.5.6.RELEASE
+ .jar tomcat-juli-8.5.16.jar spring-context-4.3.10.RELEASE.jar snakeya
+ ml-1.17.jar classmate-1.3.3.jar spring-boot-starter-jdbc-1.5.6.RELEAS
+ E.jar spring-beans-4.3.10.RELEASE.jar pagehelper-spring-boot-starter-
+ 1.1.0.jar spring-web-4.3.10.RELEASE.jar jul-to-slf4j-1.7.25.jar pageh
+ elper-spring-boot-autoconfigure-1.1.0.jar spring-boot-starter-web-1.5
+ .6.RELEASE.jar druid-spring-boot-starter-1.1.0.jar mysql-connector-ja
+ va-5.1.43.jar druid-1.1.2.jar tomcat-embed-websocket-8.5.16.jar sprin
+ g-aop-4.3.10.RELEASE.jar spring-boot-starter-tomcat-1.5.6.RELEASE.jar
+  jackson-core-2.8.9.jar jackson-databind-2.8.9.jar logback-core-1.1.1
+ 1.jar mybatis-spring-boot-autoconfigure-1.3.0.jar jcl-over-slf4j-1.7.
+ 25.jar tools.jar mybatis-spring-1.3.1.jar spring-expression-4.3.10.RE
+ LEASE.jar hibernate-validator-5.3.5.Final.jar slf4j-api-1.7.25.jar lo
+ g4j-over-slf4j-1.7.25.jar spring-boot-1.5.6.RELEASE.jar tomcat-jdbc-8
+ .5.16.jar mybatis-3.4.4.jar validation-api-1.1.0.Final.jar lombok-1.1
+ 6.18.jar tomcat-embed-core-8.5.16.jar spring-webmvc-4.3.10.RELEASE.ja
+ r spring-tx-4.3.10.RELEASE.jar tomcat-embed-el-8.5.16.jar pagehelper-
+ 5.0.0.jar spring-boot-autoconfigure-1.5.6.RELEASE.jar jackson-annotat
+ ions-2.8.0.jar android-json-0.0.20131108.vaadin1.jar jconsole.jar spr
+ ing-core-4.3.10.RELEASE.jar mybatis-spring-boot-starter-1.3.0.jar spr
+ ing-boot-devtools-1.5.6.RELEASE.jar
+Main-Class: com.jycar.server.CarServerApplication
+
