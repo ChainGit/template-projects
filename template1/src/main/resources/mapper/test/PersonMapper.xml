@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--使用PageHelper时SQL语句末尾不要有分号-->
+<mapper namespace="com.jycar.server.test.mapper.PersonMapper">
+
+    <!--不要log就是EhcacheCache,默认在日记级别为DEBUG时可以看到-->
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+    <select id="getById" parameterType="int" resultType="Person">
+        SELECT *
+        FROM t_test
+        WHERE id = #{id}
+    </select>
+
+    <select id="getAll" resultType="Person">
+        SELECT *
+        FROM t_test
+    </select>
+
+    <update id="update" parameterType="Person">
+        UPDATE t_test
+        SET name = #{name}, age = #{age}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="int">
+        DELETE FROM t_test
+        WHERE id = #{id}
+    </delete>
+
+    <insert id="add" parameterType="Person">
+        INSERT INTO t_test (name, age) VALUES (#{name}, #{age})
+    </insert>
+
+</mapper>

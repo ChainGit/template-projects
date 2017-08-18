@@ -1,0 +1,12 @@
+# 全局日志配置
+logging:
+  # 生产环境下可以更改xml文件中的PROD_FILE_PATH值
+  config: classpath:logging-config.xml
+
+## 开发/测试/生产环境分别对应dev/test/prod
+# 开发环境：消息均是默认不加密的（即便设置Result的encrypt为true也不会加密）
+# 测试和生产环境：消息均是默认加密的（接收时参数key为"ns"，以及返回的Result设置encrypt为false的除外）
+# 打包成jar包后，启动命令示例：java -jar -Dspring.profiles.active=dev carserver.jar
+spring:
+  profiles:
+    active: dev
