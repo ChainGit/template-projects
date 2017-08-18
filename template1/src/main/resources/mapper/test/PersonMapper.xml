@@ -5,6 +5,9 @@
 <!--使用PageHelper时SQL语句末尾不要有分号-->
 <mapper namespace="com.jycar.server.test.mapper.PersonMapper">
 
+    <!--不要log就是EhcacheCache,默认在日记级别为DEBUG时可以看到-->
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+
     <select id="getById" parameterType="int" resultType="Person">
         SELECT *
         FROM t_test

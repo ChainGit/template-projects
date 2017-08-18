@@ -4,15 +4,18 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.chain.utils.crypto.CryptoFactoryBean;
 import com.chain.utils.crypto.RSAUtils;
 import com.github.pagehelper.PageInterceptor;
+import net.sf.ehcache.CacheManager;
 import org.apache.ibatis.plugin.Interceptor;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -71,6 +74,7 @@ public class DataSourceConfig {
     public SqlSessionFactoryBean sqlSessionFactory() {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         String CLASS_PATH_STRING = "classpath:";
+        String CLASS_PATH2_STRING = "classpath*:";
         /** 设置mybatis configuration 扫描路径 */
         String configLocation = appConfig.getProperty("app.mybatis.config-location");
         if (configLocation.startsWith(CLASS_PATH_STRING)) {
@@ -80,7 +84,7 @@ public class DataSourceConfig {
         /** 添加mapper 扫描路径 */
         String CLASS_PATH_PREFIX = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX;
         String mybatisLocations = appConfig.getProperty("app.mybatis.mapper-locations");
-        if (mybatisLocations.startsWith(CLASS_PATH_STRING))
+        if (mybatisLocations.startsWith(CLASS_PATH_STRING) || mybatisLocations.startsWith(CLASS_PATH2_STRING))
             mybatisLocations = CLASS_PATH_PREFIX + mybatisLocations.replaceAll(CLASS_PATH_STRING, "");
         PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
         try {
@@ -134,6 +138,16 @@ public class DataSourceConfig {
         String basePackage = "com.jycar.server.";
         String tailPackage = ".entities";
         return basePackage + s + tailPackage;
+    }
+
+    @Bean
+    public CacheManager cacheManager() {
+        logger.info("create cacheManager");
+        EhCacheManagerFactoryBean ehCacheManagerFactoryBean = new EhCacheManagerFactoryBean();
+        PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
+        Resource resource = pathMatchingResourcePatternResolver.getResource("classpath:ehcache.xml");
+        ehCacheManagerFactoryBean.setConfigLocation(resource);
+        return ehCacheManagerFactoryBean.getObject();
     }
 
 }

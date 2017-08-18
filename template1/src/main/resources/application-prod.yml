@@ -5,7 +5,7 @@ server:
 
 # 自定义配置
 app:
-  name: 驾校管理综合管理系统 - 后台服务 v1.0
+  name: Car School Integrated Management - Server v1.0 [PROD MODE]
   crypto:
     # 是否启用加密
     status: true

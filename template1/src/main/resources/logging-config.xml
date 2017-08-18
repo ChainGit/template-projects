@@ -54,10 +54,11 @@
             </layout>
         </appender>
 
-        <root level="info">
+        <root level="INFO">
             <appender-ref ref="STDOUT"/>
             <appender-ref ref="TEST-FILE"/>
         </root>
+
     </springProfile>
 
     <!-- 生产环境(只输出到文件) -->

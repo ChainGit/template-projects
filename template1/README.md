@@ -4,4 +4,4 @@
 
 主要：SpringBoot+SpringMVC+Spring+MyBatis
 
-其次：druid+PageHelper+lombok
+其次：druid+ehcache+PageHelper+Lombok

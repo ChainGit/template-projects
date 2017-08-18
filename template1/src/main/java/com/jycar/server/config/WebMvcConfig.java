@@ -178,16 +178,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
         String rsaPublicKeyFile = appConfig.getProperty("app.crypto.rsa-public");
         String rsaPrivateKeyFile = appConfig.getProperty("app.crypto.rsa-private");
         String CLASS_PATH_STRING = "classpath:";
-        rsaPublicKeyFile = getFilePath(rsaPublicKeyFile, CLASS_PATH_STRING);
-        rsaPrivateKeyFile = getFilePath(rsaPrivateKeyFile, CLASS_PATH_STRING);
+        String CLASS_PATH2_STRING = "classpath*:";
+        rsaPublicKeyFile = getFilePath(rsaPublicKeyFile, CLASS_PATH_STRING, CLASS_PATH2_STRING);
+        rsaPrivateKeyFile = getFilePath(rsaPrivateKeyFile, CLASS_PATH_STRING, CLASS_PATH2_STRING);
         cryptoFactoryBean.setRsaPublicKeyFilePath(rsaPublicKeyFile);
         cryptoFactoryBean.setRsaPrivateKeyFilePath(rsaPrivateKeyFile);
         return cryptoFactoryBean;
     }
 
-    private String getFilePath(String s, String CLASS_PATH_STRING) {
+    private String getFilePath(String s, String CLASS_PATH_STRING, String CLASS_PATH2_STRING) {
         String classpath = null;
-        if (s.startsWith(CLASS_PATH_STRING)) {
+        if (s.startsWith(CLASS_PATH_STRING) || s.startsWith(CLASS_PATH2_STRING)) {
             //将jar包内的文件写到jar包外，才能获取到文件的路径
             s = s.replaceAll(CLASS_PATH_STRING, "");
             s = writeFileIntoTempDir(s);

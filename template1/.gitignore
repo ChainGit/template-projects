@@ -24,6 +24,5 @@ nbdist/
 .nb-gradle/
 
 ### Car Server Project ###
-logs/test
-logs/prod
-logs/temp
+logs
+out
