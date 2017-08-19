@@ -130,8 +130,10 @@ public class DataSourceConfig {
 
         //TODO 不要忘记修改这里
 
-        packages.add(getFull("common"));
-        //packages.add(getFull("web"));
+        packages.add(getFull("base"));
+        packages.add(getFull("web.coach"));
+        packages.add(getFull("web.student"));
+        packages.add(getFull("web.admin"));
 
         return String.join(",", packages);
     }
