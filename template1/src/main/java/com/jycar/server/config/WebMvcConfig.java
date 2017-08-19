@@ -77,7 +77,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         logger.info("add interceptors");
+        //第一个拦截器
         registry.addInterceptor(jsonStringInterceptor()).addPathPatterns("/**");
+        //第二个拦截器
         registry.addInterceptor(new MeasurementInterceptor()).addPathPatterns("/**");
     }
 

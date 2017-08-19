@@ -49,6 +49,11 @@ public class JsonStringInterceptor implements HandlerInterceptor {
             //两者均为空，创建一个空的JSON_MAP
             httpServletRequest.setAttribute(Constant.JSON_MAP, "{}");
         }
+
+        //非生成环境打印request请求中的"s"和"ns"数据，也就是Attribute中的JSON_MAP
+        if (!"prod".equals(appConfig.getProperty("spring.profiles.active"))) {
+            logger.info("Request JsonMap Parameter: " + httpServletRequest.getAttribute(Constant.JSON_MAP));
+        }
         return true;
     }
 

@@ -8,6 +8,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 获得执行的时间
+ */
 public class MeasurementInterceptor implements HandlerInterceptor {
 
     private static Logger logger = LoggerFactory.getLogger(MeasurementInterceptor.class);

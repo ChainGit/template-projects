@@ -58,14 +58,20 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
             //设置的mapper忽略只会忽略Result中的属性，但是不会忽略Result内存储的data的null值
             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         }
-        String json = mapper.writeValueAsString(object);
+        String json0 = mapper.writeValueAsString(object);
+        String json = json0;
         if (appConfig.isEncrypt() && resultEncrypt) {
             RSAUtils rsaUtils = cryptoFactoryBean.getRsaUtils(true);
-            json = rsaUtils.encryptByPrivateKey(json);
+            json = rsaUtils.encryptByPrivateKey(json0);
         }
         OutputStream body = outputMessage.getBody();
         body.write(json.getBytes());
         body.flush();
+
+        //非生成环境下打印返回的原始非加密数据（不是打印一切返回的数据的意思）
+        if (!"prod".equals(appConfig.getProperty("spring.profiles.active"))) {
+            logger.info("Response Data: " + json0);
+        }
     }
 
     /**
