@@ -8,15 +8,15 @@ import java.util.List;
 
 public interface PersonService {
 
-    public List<Person> getAll();
+    List<Person> getAll();
 
-    public Person getById(int id);
+    Person getById(int id);
 
-    public int update(Person person);
+    int update(Person person);
 
-    public int deleteById(int id);
+    int deleteById(int id);
 
-    public int add(Person person);
+    int add(Person person);
 
-    public PageInfo<Person> getPage(int current, int rows);
+    PageInfo<Person> getPage(int current, int rows);
 }

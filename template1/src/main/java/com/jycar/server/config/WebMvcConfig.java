@@ -1,5 +1,6 @@
 package com.jycar.server.config;
 
+import com.chain.utils.FileDirectoryUtils;
 import com.chain.utils.RandomStringUtils;
 import com.chain.utils.crypto.CryptoFactoryBean;
 import com.jycar.server.common.converter.ObjectToJsonStringConverter;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.format.FormatterRegistry;
@@ -30,6 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -203,23 +206,38 @@ public class WebMvcConfig implements WebMvcConfigurer {
         InputStream in = null;
         try {
             File logs = new File("logs" + File.separator + "temp");
+            if (logs.exists() && logs.isDirectory()) {
+                long lastModified = logs.lastModified();
+                long nowtime = new Date().getTime();
+                //10分钟
+                if (nowtime - lastModified > 1000 * 60 * 10)
+                    FileDirectoryUtils.emptyDirectory(logs);
+            }
             if (!logs.exists()) {
                 logs.mkdirs();
             }
+            boolean isJar = false;
             //非Jar内，常规读取
             in = this.getClass().getClassLoader().getResourceAsStream(File.separator + s);
-            if (in == null)
+            if (in == null) {
                 //Jar内，让Spring来读取
                 in = resolver.getResource(File.separator + s).getInputStream();
-            File f = new File("logs" + File.separator + "temp" + File.separator + RandomStringUtils.generateString(10));
-            os = new FileOutputStream(f);
-            byte[] buf = new byte[8 * 1024];
-            int len = -1;
-            while ((len = in.read(buf)) != -1) {
-                os.write(buf, 0, len);
+                isJar = true;
             }
-            os.flush();
-            s = f.getAbsolutePath();
+            if (isJar) {
+                File f = new File("logs" + File.separator + "temp" + File.separator + RandomStringUtils.generateString(10));
+                os = new FileOutputStream(f);
+                byte[] buf = new byte[8 * 1024];
+                int len = -1;
+                while ((len = in.read(buf)) != -1) {
+                    os.write(buf, 0, len);
+                }
+                os.flush();
+                s = f.getAbsolutePath();
+            } else {
+                Resource res = resolver.getResource(File.separator + s);
+                s = res.getFile().getAbsolutePath();
+            }
         } catch (IOException e) {
             logger.error("!!! *** IO EXCEPTION, please check if this program has " +
                     "the permission to write or read on disk at your system *** !!!");

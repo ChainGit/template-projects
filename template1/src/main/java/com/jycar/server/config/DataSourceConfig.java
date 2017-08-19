@@ -128,6 +128,8 @@ public class DataSourceConfig {
         if (!"prod".equals(mode))
             packages.add(getFull("test"));
 
+        //TODO 不要忘记修改这里
+
         packages.add(getFull("common"));
         //packages.add(getFull("web"));
 

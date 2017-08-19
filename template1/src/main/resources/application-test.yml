@@ -5,7 +5,6 @@ server:
 
 # 自定义配置
 app:
-  name: Car School Integrated Management - Server v1.0 [TEST MODE]
   crypto:
     # 是否启用加密
     status: true
@@ -15,10 +14,10 @@ app:
   # 配置数据源
   datasource:
     # 基本数据库信息
-    url: jdbc:mysql://x.x.x.x:xxxx/car?useUnicode=true&characterEncoding=utf-8
-    # RSA公钥加密的
+    url: jdbc:mysql://x.x.x.x/car?useUnicode=true&characterEncoding=utf-8
+    # xxx
     username: xxx
-    # RSA公钥加密的
+    # xxx
     password: xxx
     driver-class-name: com.mysql.jdbc.Driver
     initial-size: 2

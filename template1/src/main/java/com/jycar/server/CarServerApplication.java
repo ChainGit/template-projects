@@ -26,7 +26,8 @@ public class CarServerApplication {
     @RequestMapping("/")
     public String index() {
         logger.info("application start success!");
-        return config.getProperty("app.name");
+        return config.getProperty("app.name") + " " + config.getProperty("app.version")
+                + " [" + config.getProperty("spring.profiles.active") + "]";
     }
 
 }
