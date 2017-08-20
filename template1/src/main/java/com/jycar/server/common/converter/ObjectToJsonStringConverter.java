@@ -5,6 +5,7 @@ import com.chain.utils.crypto.CryptoFactoryBean;
 import com.chain.utils.crypto.RSAUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jycar.server.common.directory.Constant;
 import com.jycar.server.common.domain.Result;
 import com.jycar.server.config.AppConfig;
 import org.slf4j.Logger;
@@ -69,7 +70,7 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
         body.flush();
 
         //非生成环境下打印返回的原始非加密数据（不是打印一切返回的数据的意思）
-        if (!"prod".equals(appConfig.getProperty("spring.profiles.active"))) {
+        if (!Constant.PROD_MODE.equals(appConfig.getProperty("spring.profiles.active"))) {
             logger.info("Response Data: " + json0);
         }
     }

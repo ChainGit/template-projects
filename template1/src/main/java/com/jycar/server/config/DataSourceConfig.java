@@ -1,9 +1,17 @@
 package com.jycar.server.config;
 
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.logging.Slf4jLogFilter;
+import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.spring.stat.BeanTypeAutoProxyCreator;
+import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
+import com.alibaba.druid.wall.WallFilter;
 import com.chain.utils.crypto.CryptoFactoryBean;
 import com.chain.utils.crypto.RSAUtils;
 import com.github.pagehelper.PageInterceptor;
+import com.jycar.server.base.mapper.BaseMapper;
+import com.jycar.server.common.directory.Constant;
 import net.sf.ehcache.CacheManager;
 import org.apache.ibatis.plugin.Interceptor;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -58,12 +66,12 @@ public class DataSourceConfig {
         dataSource.setUrl(appConfig.getProperty("spring.datasource.url"));
         dataSource.setUsername(username);//用户名
         dataSource.setPassword(password);//密码
-        dataSource.setDriverClassName(appConfig.getProperty("spring.datasource.driver-class-name"));
-        dataSource.setInitialSize(Integer.parseInt(appConfig.getProperty("spring.datasource.druid.initial-size")));//初始化时建立物理连接的个数
-        dataSource.setMaxActive(Integer.parseInt(appConfig.getProperty("spring.datasource.druid.max-active")));//最大连接池数量
-        dataSource.setMinIdle(Integer.parseInt(appConfig.getProperty("spring.datasource.druid.min-idle")));//最小连接池数量
-        dataSource.setMaxWait(Integer.parseInt(appConfig.getProperty("spring.datasource.druid.max-wait")));//获取连接时最大等待时间，单位毫秒。
-        dataSource.setFilters(appConfig.getProperty("spring.dataSource.druid.filters"));//配置监控统计拦截的filters
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setInitialSize(1);//初始化时建立物理连接的个数
+        dataSource.setMaxActive(20);//最大连接池数量
+        dataSource.setMinIdle(1);//最小连接池数量
+        dataSource.setMaxWait(60000);//获取连接时最大等待时间，单位毫秒。
+        dataSource.setFilters("slf4j,stat,wall");//配置监控统计拦截的filters
         dataSource.setValidationQuery("SELECT 'x'");//用来检测连接是否有效的sql
         dataSource.setTimeBetweenEvictionRunsMillis(60000);
         dataSource.setMinEvictableIdleTimeMillis(300000);
@@ -76,8 +84,52 @@ public class DataSourceConfig {
         dataSource.setLogAbandoned(false);
         dataSource.setRemoveAbandoned(true);
         dataSource.setRemoveAbandonedTimeout(1800);
+        List<Filter> filters = new ArrayList<>();
+        filters.add(slf4jLogFilter());
+        filters.add(statFilter());
+        filters.add(wallFilter());
+        dataSource.setProxyFilters(filters);
         return dataSource;
     }
+
+    @Bean
+    public Slf4jLogFilter slf4jLogFilter() {
+        Slf4jLogFilter slf4jLogFilter = new Slf4jLogFilter();
+        slf4jLogFilter.setResultSetLogEnabled(true);
+        slf4jLogFilter.setStatementExecutableSqlLogEnable(true);
+        return slf4jLogFilter;
+    }
+
+    @Bean
+    public WallFilter wallFilter() {
+        WallFilter wallFilter = new WallFilter();
+        wallFilter.setDbType("mysql");
+        return wallFilter;
+    }
+
+    @Bean
+    public StatFilter statFilter() {
+        StatFilter statFilter = new StatFilter();
+        statFilter.setLogSlowSql(true);
+        statFilter.setSlowSqlMillis(1000);
+        statFilter.setDbType("mysql");
+        return statFilter;
+    }
+
+    @Bean
+    public BeanTypeAutoProxyCreator beanTypeAutoProxyCreator() {
+        BeanTypeAutoProxyCreator beanTypeAutoProxyCreator = new BeanTypeAutoProxyCreator();
+        beanTypeAutoProxyCreator.setInterceptorNames("druidStatInterceptor");
+        //没有采用AOP扫描方式，会造成问题，这里监控BaseMapper接口就行，以实现druid监控功能
+        beanTypeAutoProxyCreator.setTargetBeanType(BaseMapper.class);
+        return beanTypeAutoProxyCreator;
+    }
+
+    @Bean
+    public DruidStatInterceptor druidStatInterceptor() {
+        return new DruidStatInterceptor();
+    }
+
 
     @Bean
     public SqlSessionFactoryBean sqlSessionFactory() throws SQLException {
@@ -85,14 +137,17 @@ public class DataSourceConfig {
         String CLASS_PATH_STRING = "classpath:";
         String CLASS_PATH2_STRING = "classpath*:";
         /** 设置mybatis configuration 扫描路径 */
-        String configLocation = appConfig.getProperty("spring.mybatis.config-location");
+        String configLocation = "classpath:mybatis-config.xml";
         if (configLocation.startsWith(CLASS_PATH_STRING)) {
             configLocation = configLocation.replaceAll(CLASS_PATH_STRING, "");
         }
         bean.setConfigLocation(new ClassPathResource(configLocation));
         /** 添加mapper 扫描路径 */
         String CLASS_PATH_PREFIX = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX;
-        String mybatisLocations = appConfig.getProperty("spring.mybatis.mapper-locations");
+        String mybatisLocations = "classpath:mapper/**/*.xml";
+        //生产环境下不会加载test功能
+        if (Constant.PROD_MODE.equals(appConfig.getProperty("spring.profiles.active")))
+            mybatisLocations = "classpath:mapper/*.xml";
         if (mybatisLocations.startsWith(CLASS_PATH_STRING) || mybatisLocations.startsWith(CLASS_PATH2_STRING))
             mybatisLocations = CLASS_PATH_PREFIX + mybatisLocations.replaceAll(CLASS_PATH_STRING, "");
         PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
@@ -129,7 +184,7 @@ public class DataSourceConfig {
         logger.info("getMybatisTypeAliasesPackage");
         List<String> packages = new ArrayList<>();
         String mode = appConfig.getProperty("spring.profiles.active");
-        if (!"prod".equals(mode))
+        if (!Constant.PROD_MODE.equals(mode))
             packages.add(getFull("test"));
         //TODO 不要忘记修改这里
         packages.add(getFull("base"));

@@ -25,4 +25,9 @@ public class Constant {
     public static final String TOTAL_RECORDS = "records";
     public static final String TOTAL_PAGES = "total";
 
+    //运行环境
+    public static final String DEV_MODE = "dev";
+    public static final String TEST_MODE = "test";
+    public static final String PROD_MODE = "prod";
+
 }

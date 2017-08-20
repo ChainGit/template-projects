@@ -12,13 +12,8 @@ spring:
   # 配置数据源
   datasource:
     # 基本数据库信息
-    url: jdbc:mysql://x.x.x.x:xxxx/car?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://localhost:3306/xxx?useUnicode=true&characterEncoding=utf-8
     # RSA公钥加密的
     username: xxx
     # RSA公钥加密的
     password: xxx
-  # mybatis配置
-  mybatis:
-    # 生产环境下不会加载test功能
-    # 注意少了一个星号
-    mapper-locations: classpath:mapper/*.xml

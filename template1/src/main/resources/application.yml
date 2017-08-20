@@ -1,7 +1,10 @@
-## 开发/测试/生产环境分别对应dev/test/prod
-# 开发环境：消息均是默认不加密的（即便设置Result的encrypt为true也不会加密）
-# 测试和生产环境：消息均是默认加密的（接收时参数key为"ns"，以及返回的Result设置encrypt为false的除外）
+### 开发/测试/生产环境分别对应dev/test/prod
+## 开发环境：消息均是默认不加密的（即便设置Result的encrypt为true也不会加密）
+## 测试和生产环境：消息均是默认加密的（接收时参数key为"ns"，以及返回的Result设置encrypt为false的除外）
+## 生产环境不加载test测试接口
 # 打包成jar包后，启动命令示例：java -jar -Dspring.profiles.active=dev carserver.jar
+# spring-boot推崇只有变化的配置内容才写在外部文件中，更推荐无配置开发（注解配置+自动配置+代码配置）
+# （。＾▽＾）
 spring:
   #################################
   ### == 开发和部署记得修改这里 == ###
@@ -9,27 +12,11 @@ spring:
   profiles:
     active: dev
   #################################
-  mybatis:
-    config-location: classpath:mybatis-config.xml
   # 数据源配置
   datasource:
-      driver-class-name: com.mysql.jdbc.Driver
       # 具体可以参照：https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter
       druid:
-        initial-size: 1
-        max-active: 20
-        min-idle: 1
-        max-wait: 60000
-        aop-patterns: .*service.*
-        filters: slf4j,stat,wall
-        web-stat-filter:
-          enabled: true
-          url-pattern: /*
-          exclusions: /druid/*,*.js,*.gif,*.jpg,*.png,*.css,*.ico
-          session-stat-enable: true
         stat-view-servlet:
-          enabled: true
-          url-pattern: /druid/*
           login-username: caradmin
           login-password: car123456
           reset-enable: true

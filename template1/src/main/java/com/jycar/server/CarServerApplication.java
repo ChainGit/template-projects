@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 //自动配置的具体流程参考源码中的public ConfigurableApplicationContext run(String... args)
 @RestController
+@ServletComponentScan
 public class CarServerApplication {
 
     private Logger logger = LoggerFactory.getLogger(CarServerApplication.class);

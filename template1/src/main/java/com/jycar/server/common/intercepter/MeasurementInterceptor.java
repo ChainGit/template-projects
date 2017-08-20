@@ -1,7 +1,10 @@
 package com.jycar.server.common.intercepter;
 
+import com.jycar.server.common.directory.Constant;
+import com.jycar.server.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -15,6 +18,9 @@ public class MeasurementInterceptor implements HandlerInterceptor {
 
     private static Logger logger = LoggerFactory.getLogger(MeasurementInterceptor.class);
 
+    @Autowired
+    private AppConfig appConfig;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         long startTime = System.currentTimeMillis();
@@ -27,7 +33,9 @@ public class MeasurementInterceptor implements HandlerInterceptor {
         long startTime = (Long) request.getAttribute("s_startTime");
         request.removeAttribute("s_startTime");
         long endTime = System.currentTimeMillis();
-        logger.info("Handling Time: " + (endTime - startTime));
+        //非生产环境才打印
+        if (!Constant.PROD_MODE.equals(appConfig.getProperty("spring.profiles.active")))
+            logger.info("Handling Time: " + (endTime - startTime));
     }
 
     @Override

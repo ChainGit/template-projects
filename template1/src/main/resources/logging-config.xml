@@ -7,11 +7,19 @@
     <!--spring的log配置-->
     <logger name="org.springframework.web" level="INFO"/>
 
-    <!--mybatis的log配置-->
-    <logger name="org.mybatis" level="DEBUG"/>
+    <!--只在开发环境下启用-->
+    <springProfile name="dev">
 
-    <!--自定义log的配置-->
-    <logger name="com.jycar.server" level="DEBUG"/>
+        <!--mybatis的log配置-->
+        <logger name="org.mybatis" level="DEBUG"/>
+
+        <!--druid的log配置-->
+        <logger name="com.alibaba.druid" level="DEBUG"/>
+
+        <!--自定义log的配置-->
+        <logger name="com.jycar.server" level="DEBUG"/>
+
+    </springProfile>
 
     <!-- 文件输出格式 -->
     <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>

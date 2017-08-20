@@ -83,7 +83,12 @@ public class MvcConfig implements WebMvcConfigurer {
         //JsonStringInterceptor自定义拦截器
         registry.addInterceptor(jsonStringInterceptor()).addPathPatterns("/**");
         //MeasurementInterceptor自定义拦截器
-        registry.addInterceptor(new MeasurementInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(measurementInterceptor()).addPathPatterns("/**");
+    }
+
+    @Bean
+    public MeasurementInterceptor measurementInterceptor() {
+        return new MeasurementInterceptor();
     }
 
     @Override

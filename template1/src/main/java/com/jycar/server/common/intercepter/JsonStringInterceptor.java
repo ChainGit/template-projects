@@ -36,7 +36,12 @@ public class JsonStringInterceptor implements HandlerInterceptor {
         String jsonPlainStr = httpServletRequest.getParameter(Constant.REQUEST_PLAIN_JSON_KEY);
         if (!JyComUtils.isEmpty(jsonEncryptStr)) {
             if (appConfig.isEncrypt()) {
-                String jsonDecryptStr = rsaUtils.decryptByPrivateKey(jsonEncryptStr);
+                String jsonDecryptStr = null;
+                try {
+                    jsonDecryptStr = rsaUtils.decryptByPrivateKey(jsonEncryptStr);
+                } catch (Exception e) {
+                    logger.error("not a correct encrypted json string");
+                }
                 if (jsonDecryptStr == null)
                     return false;
                 httpServletRequest.setAttribute(Constant.JSON_MAP, jsonDecryptStr);
@@ -51,7 +56,7 @@ public class JsonStringInterceptor implements HandlerInterceptor {
         }
 
         //非生成环境打印request请求中的"s"和"ns"数据，也就是Attribute中的JSON_MAP
-        if (!"prod".equals(appConfig.getProperty("spring.profiles.active"))) {
+        if (!Constant.PROD_MODE.equals(appConfig.getProperty("spring.profiles.active"))) {
             logger.info("Request JsonMap Parameter: " + httpServletRequest.getAttribute(Constant.JSON_MAP));
         }
         return true;
