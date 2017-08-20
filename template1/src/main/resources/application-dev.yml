@@ -12,6 +12,8 @@ spring:
   # 配置数据源
   datasource:
     # 基本数据库信息
-    url: jdbc:mysql://x.x.x.x/xxx?useUnicode=true&characterEncoding=utf-8
-    username: xxx
-    password: xxx
+    # 如果密码是纯数字需要加上引号
+    url: jdbc:mysql://192.168.56.2/test?useUnicode=true&characterEncoding=utf-8
+    username: chain
+    password: "0702"
+

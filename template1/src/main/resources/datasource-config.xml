@@ -30,24 +30,24 @@
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <tx:method name="insert*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.jycar.server.common.exception.CarServerException"/>
+                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
             <tx:method name="update*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.jycar.server.common.exception.CarServerException"/>
+                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
             <tx:method name="delete*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.jycar.server.common.exception.CarServerException"/>
+                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
             <tx:method name="add*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.jycar.server.common.exception.CarServerException"/>
+                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
             <tx:method name="log" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.jycar.server.common.exception.CarServerException"/>
+                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
             <!-- quartz job 方法也需要在事物中执行 -->
             <tx:method name="pause*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.jycar.server.common.exception.CarServerException"/>
+                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
             <tx:method name="resume*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.jycar.server.common.exception.CarServerException"/>
+                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
             <tx:method name="execute*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.jycar.server.common.exception.CarServerException"/>
+                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
             <tx:method name="interrupt*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.jycar.server.common.exception.CarServerException"/>
+                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
             <tx:method name="*" read-only="true"/>
         </tx:attributes>
     </tx:advice>
@@ -55,7 +55,7 @@
     <aop:config expose-proxy="true" proxy-target-class="true">
         <!-- 配置哪些类的方法进行事务管理:定义在service包或者子包里的任意方法的执行 -->
         <aop:pointcut id="transactionPointcut"
-                      expression="execution(* com.jycar.server.*.service..*.*(..))"/>
+                      expression="execution(* com.chain.project.*.service..*.*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="transactionPointcut" order="0"/>
     </aop:config>
 

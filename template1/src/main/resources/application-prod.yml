@@ -4,16 +4,20 @@ app:
     # 是否启用加密
     status: true
     # 密钥文件位置（建议放在非项目目录下,且使用绝对路径）
-    rsa-public: E:/Temps/public.key
-    rsa-private: E:/Temps/private.key
+    rsa-public: /opt/crypto/public.key
+    rsa-private: /opt/crypto/private.key
 
 # spring的配置
 spring:
   # 配置数据源
   datasource:
     # 基本数据库信息
-    url: jdbc:mysql://localhost:3306/xxx?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://192.168.56.2/test?useUnicode=true&characterEncoding=utf-8
     # RSA公钥加密的
-    username: xxx
+    username: YbKJaJzC4HNYgqwtOzAsi6GLK92953jTIVYnu9AZyOp7JrVS5y7HKrw/ks9urdbRU6oFRvd1ahbL
+              PwXyOJKLyzBgKc4LyvlriomDxSLCrkMcKXbxs3rW2rB5i/x8TuFi9nugmktgc3UplcwBZ3IjJYOW
+              OTE7pDG6ga9K5OykvMc=
     # RSA公钥加密的
-    password: xxx
+    password: F+knZXWvyJzVm6d0m/pWTtzrpcqBd6ilTBoZbi5HQVAetvmcGn+6+XQHGAB6jmCpgAUMvjTiuoSl
+              Kb0ohRKwrby1ArTIbIdcYE0V3U/12c3QXwsBQLhm5xQ4sNfH5DV/AJc7wr5obV58CdEnWTySY/6A
+              tEJbg+HQ/wRvb+M2UG8=

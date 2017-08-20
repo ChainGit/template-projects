@@ -23,6 +23,6 @@ dist/
 nbdist/
 .nb-gradle/
 
-### Car Server Project ###
+### Chain Project ###
 logs/
 out/

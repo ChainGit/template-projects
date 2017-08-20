@@ -17,7 +17,7 @@
         <logger name="com.alibaba.druid" level="DEBUG"/>
 
         <!--自定义log的配置-->
-        <logger name="com.jycar.server" level="DEBUG"/>
+        <logger name="com.chain.project" level="DEBUG"/>
 
     </springProfile>
 

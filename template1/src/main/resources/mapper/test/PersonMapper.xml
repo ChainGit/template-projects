@@ -3,18 +3,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!--使用PageHelper时SQL语句末尾不要有分号-->
-<mapper namespace="com.jycar.server.test.mapper.PersonMapper">
+<mapper namespace="com.chain.project.test.mapper.PersonMapper">
 
     <!--不要log就是EhcacheCache,默认在日记级别为DEBUG时可以看到-->
     <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
 
-    <select id="getById" parameterType="int" resultType="Person">
+    <select id="findById" parameterType="int" resultType="Person">
         SELECT *
         FROM t_test
         WHERE id = #{id}
     </select>
 
-    <select id="getAll" resultType="Person">
+    <select id="queryListAll" resultType="Person">
         SELECT *
         FROM t_test
     </select>
@@ -30,7 +30,7 @@
         WHERE id = #{id}
     </delete>
 
-    <insert id="add" parameterType="Person">
+    <insert id="insert" parameterType="Person">
         INSERT INTO t_test (name, age) VALUES (#{name}, #{age})
     </insert>
 
