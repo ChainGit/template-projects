@@ -9,9 +9,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+//其实springMVC4也是能实现零配置文件的，spring-boot只是做了更进一步的自动配置
 //SpringBootApplication已经包含了ComponentScan和EnableAutoConfiguration
+//默认会自动执行一些AutoConfiguration，如果不希望某个自动配置，使用excludes就行
+//明确指定那些需要自动配置，则不使用@SpringBootApplication，而使用@Import逐个指定就行
 @SpringBootApplication
+//自动配置的具体流程参考源码中的public ConfigurableApplicationContext run(String... args)
+@RestController
 public class CarServerApplication {
 
     private Logger logger = LoggerFactory.getLogger(CarServerApplication.class);

@@ -10,6 +10,7 @@ import com.jycar.server.common.intercepter.JsonStringInterceptor;
 import com.jycar.server.common.intercepter.MeasurementInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
@@ -38,11 +39,13 @@ import java.util.List;
 import java.util.Set;
 
 @Configuration
-//启用WebMvcConfigurer的自定义配置
+//一个web项目，最重要的就是Mvc相关的控制
+//这里启用WebMvcConfigurer的自定义配置，即不使用WebMvcAutoConfiguration
 @EnableWebMvc
-public class WebMvcConfig implements WebMvcConfigurer {
+@AutoConfigureAfter({WebConfig.class})
+public class MvcConfig implements WebMvcConfigurer {
 
-    private Logger logger = LoggerFactory.getLogger(WebMvcConfig.class);
+    private Logger logger = LoggerFactory.getLogger(MvcConfig.class);
 
     @Bean
     public AppConfig appConfig() {
@@ -77,9 +80,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         logger.info("add interceptors");
-        //第一个拦截器
+        //JsonStringInterceptor自定义拦截器
         registry.addInterceptor(jsonStringInterceptor()).addPathPatterns("/**");
-        //第二个拦截器
+        //MeasurementInterceptor自定义拦截器
         registry.addInterceptor(new MeasurementInterceptor()).addPathPatterns("/**");
     }
 

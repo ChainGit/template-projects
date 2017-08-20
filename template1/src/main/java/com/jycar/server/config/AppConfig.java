@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+//这个不是用于配置的，只是一个工具类
 @Component
 public class AppConfig {
 

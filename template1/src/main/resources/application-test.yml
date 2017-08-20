@@ -1,8 +1,3 @@
-# 基本配置
-server:
-  port: 8080
-  context-path: /
-
 # 自定义配置
 app:
   crypto:
@@ -11,6 +6,9 @@ app:
     # 密钥文件位置
     rsa-public: classpath:crypto/public.key
     rsa-private: classpath:crypto/private.key
+
+# spring的配置
+spring:
   # 配置数据源
   datasource:
     # 基本数据库信息
@@ -19,13 +17,6 @@ app:
     username: xxx
     # xxx
     password: xxx
-    driver-class-name: com.mysql.jdbc.Driver
-    initial-size: 2
-    max-active: 20
-    min-idle: 0
-    max-wait: 60000
-    validation-query: SELECT 1
   # mybatis配置
   mybatis:
-    config-location: classpath:mybatis-config.xml
     mapper-locations: classpath:mapper/**/*.xml

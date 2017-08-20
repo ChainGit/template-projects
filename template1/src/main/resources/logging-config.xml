@@ -3,7 +3,15 @@
 
     <!--导入默认的日志配置-->
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!--spring的log配置-->
     <logger name="org.springframework.web" level="INFO"/>
+
+    <!--mybatis的log配置-->
+    <logger name="org.mybatis" level="DEBUG"/>
+
+    <!--自定义log的配置-->
+    <logger name="com.jycar.server" level="DEBUG"/>
 
     <!-- 文件输出格式 -->
     <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
