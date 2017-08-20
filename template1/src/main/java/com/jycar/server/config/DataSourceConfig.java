@@ -100,6 +100,9 @@ public class DataSourceConfig {
         Slf4jLogFilter slf4jLogFilter = new Slf4jLogFilter();
         slf4jLogFilter.setResultSetLogEnabled(true);
         slf4jLogFilter.setStatementExecutableSqlLogEnable(true);
+        slf4jLogFilter.setConnectionLogEnabled(true);
+        slf4jLogFilter.setStatementLogEnabled(true);
+        slf4jLogFilter.setConnectionLogErrorEnabled(true);
         return slf4jLogFilter;
     }
 
