@@ -2,6 +2,8 @@ package com.jycar.server.config;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -18,11 +20,14 @@ import java.util.*;
 @Configuration
 public class WebConfig {
 
+    private Logger logger = LoggerFactory.getLogger(WebConfig.class);
+
     @Autowired
     private AppConfig appConfig;
 
     @Bean
     public ServletRegistrationBean servletRegistrationBean() {
+        logger.info("create servletRegistrationBean");
         ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean();
         //示例
         //servletRegistrationBean.addUrlMappings("/demo-servlet2");
@@ -42,6 +47,7 @@ public class WebConfig {
 
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
+        logger.info("create filterRegistrationBean");
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         Set<String> set = new HashSet<>();
         List<String> urls = new ArrayList<>();
@@ -63,6 +69,7 @@ public class WebConfig {
 
     //@Bean
     public ServletListenerRegistrationBean servletListenerRegistrationBean() {
+        logger.info("create servletListenerRegistrationBean");
         ServletListenerRegistrationBean servletListenerRegistrationBean = new ServletListenerRegistrationBean();
         //示例
         //servletListenerRegistrationBean.setListener(new Log4jConfigListener());

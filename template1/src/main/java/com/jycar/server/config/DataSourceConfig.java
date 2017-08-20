@@ -22,10 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -39,6 +41,7 @@ import java.util.Properties;
 //开启事务管理，也可以手动写txManager配置
 @EnableTransactionManagement
 @MapperScan("com.jycar.server.**.mapper")
+@ImportResource("classpath:datasource-config.xml")
 public class DataSourceConfig {
 
     private static Logger logger = LoggerFactory.getLogger(DataSourceConfig.class);
@@ -209,5 +212,13 @@ public class DataSourceConfig {
         ehCacheManagerFactoryBean.setConfigLocation(resource);
         ehCacheManagerFactoryBean.setShared(true);
         return ehCacheManagerFactoryBean.getObject();
+    }
+
+    @Bean("transactionManager")
+    public DataSourceTransactionManager transactionManager() throws SQLException {
+        logger.info("create transactionManager");
+        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
+        dataSourceTransactionManager.setDataSource(dataSource());
+        return dataSourceTransactionManager;
     }
 }
