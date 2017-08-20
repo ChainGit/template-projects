@@ -10,13 +10,13 @@ import java.util.List;
 @Component
 public interface PersonMapper extends BaseMapper<Person, Integer> {
 
-    int add(Person person);
+    int insert(Person person);
 
     int update(Person user);
 
-    int deleteById(int id);
+    int deleteById(Integer id);
 
-    Person getById(int id);
+    Person findById(Integer id);
 
-    List<Person> getAll();
+    List<Person> queryListAll();
 }

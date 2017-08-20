@@ -2,6 +2,7 @@ package com.jycar.server.test.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.jycar.server.base.service.impl.AbstractService;
 import com.jycar.server.common.utils.JyComUtils;
 import com.jycar.server.test.entities.Person;
 import com.jycar.server.test.mapper.PersonMapper;
@@ -13,19 +14,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service("personService")
-public class PersonServiceImpl implements PersonService {
+public class PersonServiceImpl extends AbstractService<Person, Integer> implements PersonService {
 
     @Autowired
     private PersonMapper personMapper;
 
     @Override
-    public List<Person> getAll() {
-        return personMapper.getAll();
+    public List<Person> queryListAll() {
+        return personMapper.queryListAll();
     }
 
     @Override
-    public Person getById(int id) {
-        return personMapper.getById(id);
+    public Person findById(Integer id) {
+        return personMapper.findById(id);
     }
 
     @Transactional
@@ -46,8 +47,8 @@ public class PersonServiceImpl implements PersonService {
 
     @Transactional
     @Override
-    public int add(Person person) {
-        int num = personMapper.add(person);
+    public int insert(Person person) {
+        int num = personMapper.insert(person);
         JyComUtils.randomDisaster();
         return num;
     }
@@ -55,7 +56,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public PageInfo<Person> getPage(int currentPageNum, int eachPageRows) {
         PageHelper.startPage(currentPageNum, eachPageRows);
-        List<Person> list = this.getAll();
+        List<Person> list = this.queryListAll();
         PageInfo<Person> pageInfo = new PageInfo<>(list);
         return pageInfo;
     }

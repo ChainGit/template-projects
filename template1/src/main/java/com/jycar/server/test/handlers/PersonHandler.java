@@ -1,6 +1,7 @@
 package com.jycar.server.test.handlers;
 
 import com.github.pagehelper.PageInfo;
+import com.jycar.server.base.handlers.BaseHandler;
 import com.jycar.server.common.directory.Constant;
 import com.jycar.server.common.domain.JsonMap;
 import com.jycar.server.common.domain.Result;
@@ -35,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/test", method = RequestMethod.POST)
 //相当于Controller+ResponseBody
 @RestController
-public class PersonHandler {
+public class PersonHandler extends BaseHandler {
 
     private static Logger logger = LoggerFactory.getLogger(PersonHandler.class);
 
@@ -54,7 +55,7 @@ public class PersonHandler {
         System.out.println(jsonMap);
         // throw new RuntimeException("发生错误了1");
         // return null;
-        return Result.ok(personService.getAll(), Result.SUCCESS);
+        return Result.ok(personService.queryListAll(), Result.SUCCESS);
     }
 
     //返回不加密数据测试
@@ -63,7 +64,7 @@ public class PersonHandler {
         System.out.println(jsonMap);
         // throw new RuntimeException("发生错误了2");
         // return null;
-        return Result.ok(personService.getAll(), Result.SUCCESS).setEncrypt(Constant.RESPONSE_PLAIN_JSON_KEY);
+        return Result.ok(personService.queryListAll(), Result.SUCCESS).setEncrypt(Constant.RESPONSE_PLAIN_JSON_KEY);
     }
 
     /***增删改查、分页查询、事务（已配置自动开启）的测试***/
@@ -76,7 +77,7 @@ public class PersonHandler {
         System.out.println(jsonMap);
         //Jackson会自动转换
         int id = (int) jsonMap.get("id");
-        Person person = personService.getById(id);
+        Person person = personService.findById(id);
         return Result.ok(person, Constant.SUCCESS).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY);
     }
 
@@ -94,7 +95,7 @@ public class PersonHandler {
     public Result add(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
         System.out.println(jsonMap);
         Person person = JyComUtils.mapToObject(jsonMap, Person.class);
-        int num = personService.add(person);
+        int num = personService.insert(person);
         return Result.ok(num, Result.SUCCESS);
     }
 

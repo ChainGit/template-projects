@@ -1,9 +1,8 @@
 package com.jycar.server.test.entities;
 
+import com.jycar.server.base.entities.BaseEntity;
 import lombok.Data;
 import org.springframework.stereotype.Repository;
-
-import java.io.Serializable;
 
 /**
  * 实体类一般遵循下面的规范：
@@ -15,7 +14,7 @@ import java.io.Serializable;
  */
 @Repository
 @Data
-public class Person implements Serializable {
+public class Person extends BaseEntity {
 
     private long id;
     private String name;
