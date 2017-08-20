@@ -54,7 +54,7 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
             Result result = (Result) object;
             resultEncrypt = result.isEncrypt();
             result.setEncrypt(null);
-            //这个方法没用
+            //TODO: 这个方法暂时不用，况且也不完善
             //ignoreResultValue(result);
             //设置的mapper忽略只会忽略Result中的属性，但是不会忽略Result内存储的data的null值
             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
