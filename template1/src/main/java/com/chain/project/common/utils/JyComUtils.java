@@ -43,7 +43,7 @@ public class JyComUtils {
     }
 
     static {
-        dateTimeFormatter = DateTimeFormatter.ofPattern(Constant.TIME_PATTERN);
+        dateTimeFormatter = DateTimeFormatter.ofPattern(Constant.DATETIME_PATTERN);
     }
 
     public static Boolean isEmpty(String s) {

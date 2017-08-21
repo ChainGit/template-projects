@@ -36,6 +36,8 @@ public class Constant {
     public static final String PROD_MODE = "prod";
 
     //时间格式
-    public static final String TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_PATTERN = "yyyy-MM-dd";
+    public static final String TIME_PATTERN = "HH:mm:ss";
 
 }

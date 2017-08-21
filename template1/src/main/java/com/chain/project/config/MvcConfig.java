@@ -3,6 +3,7 @@ package com.chain.project.config;
 import com.chain.project.common.converter.ObjectToJsonStringConverter;
 import com.chain.project.common.converter.StringToJsonMapConverter;
 import com.chain.project.common.exception.ChainProjectRuntimeException;
+import com.chain.project.common.formatter.CarServerDateFormatter;
 import com.chain.project.common.intercepter.JsonStringInterceptor;
 import com.chain.project.common.intercepter.MeasurementInterceptor;
 import com.chain.utils.FileDirectoryUtils;
@@ -18,6 +19,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.format.Formatter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -173,9 +175,18 @@ public class MvcConfig implements WebMvcConfigurer {
         logger.info("create bean conversionService");
         FormattingConversionServiceFactoryBean conversionServiceFactoryBean = new FormattingConversionServiceFactoryBean();
         Set<Converter> converters = new LinkedHashSet<>();
+        Set<Formatter> formatters = new LinkedHashSet<>();
         converters.add(stringToJsonMapConverter());
         conversionServiceFactoryBean.setConverters(converters);
+        formatters.add(carServerDateFormatter());
+        conversionServiceFactoryBean.setFormatters(formatters);
         return conversionServiceFactoryBean.getObject();
+    }
+
+
+    @Bean
+    public CarServerDateFormatter carServerDateFormatter() {
+        return new CarServerDateFormatter();
     }
 
     @Bean

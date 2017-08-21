@@ -194,6 +194,8 @@ public class DataSourceConfig {
             packages.add(getFull("test"));
         //TODO 不要忘记修改这里
         packages.add(getFull("base"));
+        packages.add(getFull("more"));
+
         packages.add(getFull("unit"));
         return String.join(",", packages);
     }

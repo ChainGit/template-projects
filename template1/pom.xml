@@ -114,7 +114,7 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-        <!--一个神奇的工具-->
+        <!--一个神奇的工具，idea也需要安装上lombok插件才能完全的支持-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

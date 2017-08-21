@@ -63,7 +63,7 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
             result.setEncrypt(null);
             //FIXME: 这个方法暂时不用，况且也不完善
             //ignoreResultValue(result);
-            //设置的mapper忽略只会忽略Result中的属性，但是不会忽略Result内存储的data的null值
+            //设置的mapper忽略会忽略Object内的所有value为null的值
             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         }
         //对于时间，Jackson默认是转成timestamp形式的，即一个long型数
@@ -98,6 +98,7 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
                 for (String s : ignores) {
                     Field f = ReflectionUtils.getDeclaredField(data, s);
                     if (f != null)
+                        //设置成null即可
                         ReflectionUtils.setField(data, f, null);
                 }
             } catch (Exception e) {
