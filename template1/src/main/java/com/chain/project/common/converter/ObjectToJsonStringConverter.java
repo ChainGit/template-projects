@@ -54,11 +54,12 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
             Result result = (Result) object;
             resultEncrypt = result.isEncrypt();
             result.setEncrypt(null);
-            //TODO: 这个方法暂时不用，况且也不完善
+            //FIXME: 这个方法暂时不用，况且也不完善
             //ignoreResultValue(result);
             //设置的mapper忽略只会忽略Result中的属性，但是不会忽略Result内存储的data的null值
             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         }
+        //对于时间，Jackson默认是转成timestamp形式的，即一个long型数
         String json0 = mapper.writeValueAsString(object);
         String json = json0;
         if (appConfig.isEncrypt() && resultEncrypt) {

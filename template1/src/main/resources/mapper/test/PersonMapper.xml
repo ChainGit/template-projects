@@ -8,7 +8,7 @@
     <!--不要log就是EhcacheCache,默认在日记级别为DEBUG时可以看到-->
     <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
 
-    <select id="findById" parameterType="int" resultType="Person">
+    <select id="findById" parameterType="long" resultType="Person">
         SELECT *
         FROM t_test
         WHERE id = #{id}
@@ -25,7 +25,7 @@
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteById" parameterType="int">
+    <delete id="deleteById" parameterType="long">
         DELETE FROM t_test
         WHERE id = #{id}
     </delete>

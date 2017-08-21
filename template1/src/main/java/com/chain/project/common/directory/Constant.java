@@ -16,7 +16,12 @@ public class Constant {
     //用于返回值
     public static final String SUCCESS = "success";
     public static final String FAILURE = "failure";
+    public static final String EMPTY_DATA = "empty data";
     public static final String NULL = "null";
+
+    public static final String SUCCESS_CN = "成功";
+    public static final String FAILURE_CN = "失败";
+    public static final String EMPTY_DATA_CN = "数据为空";
 
     //用于分页
     public static final String CURRENT_PAGE = "page";
@@ -29,5 +34,8 @@ public class Constant {
     public static final String DEV_MODE = "dev";
     public static final String TEST_MODE = "test";
     public static final String PROD_MODE = "prod";
+
+    //时间格式
+    public static final String TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
 }

@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * 模式：
  * request带参数，response带值
@@ -55,7 +58,11 @@ public class PersonHandler extends BaseHandler {
         System.out.println(jsonMap);
         // throw new RuntimeException("发生错误了1");
         // return null;
-        return Result.ok(personService.queryListAll(), Result.SUCCESS);
+        List<Person> personList = personService.queryListAll();
+        if (JyComUtils.isEmpty(personList)) {
+            return Result.ok(Result.EMPTY_DATA);
+        }
+        return Result.ok(personList);
     }
 
     //返回不加密数据测试
@@ -64,7 +71,11 @@ public class PersonHandler extends BaseHandler {
         System.out.println(jsonMap);
         // throw new RuntimeException("发生错误了2");
         // return null;
-        return Result.ok(personService.queryListAll(), Result.SUCCESS).setEncrypt(Constant.RESPONSE_PLAIN_JSON_KEY);
+        List<Person> personList = personService.queryListAll();
+        if (JyComUtils.isEmpty(personList)) {
+            return Result.ok(Result.EMPTY_DATA).setEncrypt(false);
+        }
+        return Result.ok(personList).setEncrypt(false);
     }
 
     /***增删改查、分页查询、事务（已配置自动开启）的测试***/
@@ -72,12 +83,15 @@ public class PersonHandler extends BaseHandler {
     /***注意2：因为是纯后台，所以采用非REST风格，即所有参数以JSON形式放在body里，且均为POST方式***/
 
     //查找(规范为GET，这里使用POST)
-    @RequestMapping("/get")
-    public Result get(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
+    @RequestMapping("/find")
+    public Result find(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
         System.out.println(jsonMap);
         //Jackson会自动转换
-        int id = (int) jsonMap.get("id");
+        long id = jsonMap.getLong("id");
         Person person = personService.findById(id);
+        if (JyComUtils.isEmpty(person)) {
+            Result.fail(Result.EMPTY_DATA).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY);
+        }
         return Result.ok(person, Constant.SUCCESS).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY);
     }
 
@@ -87,25 +101,34 @@ public class PersonHandler extends BaseHandler {
         System.out.println(jsonMap);
         Person person = JyComUtils.mapToObject(jsonMap, Person.class);
         int num = personService.update(person);
-        return Result.ok(num, Result.SUCCESS);
+        if (JyComUtils.isPositive(num))
+            return Result.ok();
+        else
+            return Result.fail();
     }
 
     //增加
-    @RequestMapping("/add")
-    public Result add(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
+    @RequestMapping("/insert")
+    public Result insert(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
         System.out.println(jsonMap);
         Person person = JyComUtils.mapToObject(jsonMap, Person.class);
         int num = personService.insert(person);
-        return Result.ok(num, Result.SUCCESS);
+        if (JyComUtils.isPositive(num))
+            return Result.ok();
+        else
+            return Result.fail();
     }
 
     //删除
     @RequestMapping("/delete")
     public Result delete(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
         System.out.println(jsonMap);
-        int id = jsonMap.get("id", Integer.class);
+        long id = jsonMap.get("id", Long.class);
         int num = personService.deleteById(id);
-        return Result.ok(num, Result.SUCCESS);
+        if (JyComUtils.isPositive(num))
+            return Result.ok();
+        else
+            return Result.fail();
     }
 
     //分页查询(使用PageHelper)
@@ -118,7 +141,45 @@ public class PersonHandler extends BaseHandler {
         outMap.put(Constant.EACH_PAGE_RECORDS, pageInfo.getList());
         outMap.put(Constant.TOTAL_PAGES, pageInfo.getPages());
         outMap.put(Constant.TOTAL_RECORDS, pageInfo.getTotal());
-        return Result.ok(outMap, Result.SUCCESS).setEncrypt(false);
+        if (JyComUtils.isEmpty(outMap))
+            return Result.ok().setEncrypt(Constant.RESPONSE_PLAIN_JSON_KEY);
+        return Result.ok(outMap).setEncrypt(false);
+    }
+
+    /***其他测试***/
+
+    //时间的处理：与前端交互默认是以long型，特殊情况下可以使用字符串
+    @RequestMapping("/time")
+    public Result time(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
+        //传递的是long
+        String time1 = jsonMap.getFormatDateString("t1");
+        System.out.println("time1: " + time1);
+
+        //传递的是满足Constant.TIME_PATTERN的String型时间：如2017-12-01 18:09:27
+        String time2 = jsonMap.getString("t2");
+        System.out.println("time2: " + time2);
+
+        //转换为Date
+        Date date1 = jsonMap.getDate("t1");
+        Date date2 = JyComUtils.parseDateFormString(time2);
+        Date date3 = new Date();
+
+        JsonMap out = new JsonMap();
+        //字符串时间传递
+        out.put("t1", time1);
+        out.put("t2", time2);
+        //传递默认的Date.toString方法
+        out.put("t3_1", date3.toString());
+        //传递格式化的date
+        out.put("t3_2", JyComUtils.toFormatDateString(date3));
+        //传递Java8的新API的toString
+        out.put("t3_3", date3.toInstant().toString());
+
+        //jackson默认转为long
+        out.put("data1", date1);
+        out.put("date2", date2);
+        out.put("date3", date3);
+        return Result.ok(out);
     }
 
 }

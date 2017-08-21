@@ -1,6 +1,5 @@
 package com.chain.project.common.exception;
 
-import com.chain.project.common.directory.Constant;
 import com.chain.project.common.domain.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +19,7 @@ public class ChainProjectExceptionResolver {
     @ResponseBody
     public Result exception(Exception e) {
         logger.error("===== !!! [EXCEPTION] !!! =====", e);
-        String data = Constant.NULL;
-        //默认返回的是加密的错误消息
-        return Result.fail(data, Result.FAILURE);
+        //默认返回的是加密的错误结果Result
+        return Result.fail();
     }
 }

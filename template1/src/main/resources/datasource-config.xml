@@ -53,9 +53,9 @@
     </tx:advice>
 
     <aop:config expose-proxy="true" proxy-target-class="true">
-        <!-- 配置哪些类的方法进行事务管理:定义在service包或者子包里的任意方法的执行 -->
+        <!-- 配置哪些类的方法进行事务管理:定义在handlers包或者子包里的任意方法的执行 -->
         <aop:pointcut id="transactionPointcut"
-                      expression="execution(* com.chain.project.*.service..*.*(..))"/>
+                      expression="execution(* com.chain.project.*.handlers..*.*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="transactionPointcut" order="0"/>
     </aop:config>
 

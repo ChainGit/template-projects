@@ -31,6 +31,7 @@ public class StringToJsonMapConverter implements Converter<String, JsonMap> {
         }
         try {
             //会自动的判断s中的值类型并自动转换，比如{"id"=123,"status"=true}，会自动转成Integer和Boolean
+            //jackson时间的传递默认是long
             jsonMap = objectMapper.readValue(s, JsonMap.class);
         } catch (IOException e) {
             logger.error("io exception", e);

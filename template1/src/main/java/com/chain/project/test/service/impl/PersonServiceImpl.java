@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service("personService")
-public class PersonServiceImpl extends AbstractService<Person, Integer> implements PersonService {
+public class PersonServiceImpl extends AbstractService<Person, Long> implements PersonService {
 
     @Autowired
     private PersonMapper personMapper;
@@ -25,7 +25,7 @@ public class PersonServiceImpl extends AbstractService<Person, Integer> implemen
     }
 
     @Override
-    public Person findById(Integer id) {
+    public Person findById(Long id) {
         return personMapper.findById(id);
     }
 
@@ -39,7 +39,7 @@ public class PersonServiceImpl extends AbstractService<Person, Integer> implemen
 
     @Transactional
     @Override
-    public int deleteById(int id) {
+    public int deleteById(Long id) {
         int num = personMapper.deleteById(id);
         JyComUtils.randomDisaster();
         return num;

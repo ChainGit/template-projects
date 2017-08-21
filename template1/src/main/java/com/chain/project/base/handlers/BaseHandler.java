@@ -12,5 +12,4 @@ public abstract class BaseHandler {
 
     public Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
 }

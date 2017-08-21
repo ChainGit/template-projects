@@ -16,6 +16,8 @@ public class AbstractService<T, ID extends Serializable> implements BaseService<
         this.baseMapper = baseMapper;
     }
 
+    //增删改需要捕获异常并抛出
+
     @Override
     public int insert(T t) {
         try {
@@ -69,6 +71,8 @@ public class AbstractService<T, ID extends Serializable> implements BaseService<
             throw new ChainProjectRuntimeException(e);
         }
     }
+
+    //查操作一般不用检测异常
 
     @Override
     public T find(Map<String, Object> parameter) {

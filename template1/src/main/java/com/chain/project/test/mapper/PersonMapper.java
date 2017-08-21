@@ -8,15 +8,15 @@ import java.util.List;
 
 //java可以也仅仅可以多继承（或者实现）接口，类是单继承
 @Component
-public interface PersonMapper extends BaseMapper<Person, Integer> {
+public interface PersonMapper extends BaseMapper<Person, Long> {
 
     int insert(Person person);
 
     int update(Person user);
 
-    int deleteById(Integer id);
+    int deleteById(Long id);
 
-    Person findById(Integer id);
+    Person findById(Long id);
 
     List<Person> queryListAll();
 }
