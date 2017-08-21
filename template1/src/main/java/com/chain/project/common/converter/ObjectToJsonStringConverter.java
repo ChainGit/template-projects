@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpOutputMessage;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,12 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
             HttpMessageNotWritableException {
 //        logger.info("MyMappingJackson2HttpMessageConverter writeInternal");
 //        super.writeInternal(object, type, outputMessage);
+        MediaType contentType = outputMessage.getHeaders().getContentType();
+        MediaType[] supportedMediaTypes = {MediaType.APPLICATION_JSON, new MediaType("application", "*+json")};
+        //只有是application/json时才进行转换
+        if (!(contentType != null && (contentType.includes(supportedMediaTypes[0])) || contentType.includes(supportedMediaTypes[1])))
+            return;
+
         ObjectMapper mapper = new ObjectMapper();
         if (object == null) {
             //创建一个空的Result对象

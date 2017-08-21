@@ -13,6 +13,7 @@ spring:
     active: dev
   #################################
   # 数据源配置
+  # 注意：如果要使用mybatis的TypeAliasesPackage，修改DataSourceConfig的getFull即可
   datasource:
       # 具体可以参照：https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter
       druid:
@@ -30,6 +31,7 @@ logging:
 debug: false
 
 # 部署端口等设置
+# spring-boot默认是全局UTF-8
 server:
   port: 8080
   context-path: /
