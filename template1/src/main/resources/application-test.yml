@@ -14,10 +14,10 @@ spring:
     # 基本数据库信息
     url: jdbc:mysql://192.168.56.2/test?useUnicode=true&characterEncoding=utf-8
     # chain
-    username: YbKJaJzC4HNYgqwtOzAsi6GLK92953jTIVYnu9AZyOp7JrVS5y7HKrw/ks9urdbRU6oFRvd1ahbL
-              PwXyOJKLyzBgKc4LyvlriomDxSLCrkMcKXbxs3rW2rB5i/x8TuFi9nugmktgc3UplcwBZ3IjJYOW
-              OTE7pDG6ga9K5OykvMc=
+    username: wudjGhgBt+c+3Ncf2VVvhflph/6h9Ukd/agHNWG+ESwA9TFvOUGrMAH07mdJH+g/np/PZqZKIvxp
+              vA5fQsEPsQMPjpBLJkY/Hl9x8Rb0pfXvKw3CZOAn4nsZpIZfxyCWFafUG3xTXM03zm7yvZENcqFs
+              BzQs1sEp2RYrumX01/o=
     # 0702
-    password: F+knZXWvyJzVm6d0m/pWTtzrpcqBd6ilTBoZbi5HQVAetvmcGn+6+XQHGAB6jmCpgAUMvjTiuoSl
-              Kb0ohRKwrby1ArTIbIdcYE0V3U/12c3QXwsBQLhm5xQ4sNfH5DV/AJc7wr5obV58CdEnWTySY/6A
-              tEJbg+HQ/wRvb+M2UG8=
+    password: DfS6qsq8GSUI4BUESV8RAQ+oRQxZ4GeoYwN+NPIeFczLM8nqXizsnDmmcCVZ6rPOUad02cz5nnxW
+              7ULtCm7LfcqIe9pTz3SdKalF46NMYiASAoBTpqf8q8NdXRa1+Y+YFmW3HVrt8x8umvq+PxXzzbFJ
+              4r3ucC7O5gol/1RTIaA=

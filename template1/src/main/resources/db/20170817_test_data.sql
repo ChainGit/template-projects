@@ -1,12 +1,3 @@
-DROP TABLE IF EXISTS `t_test`;
-
-CREATE TABLE `t_test` (
-  `id`   BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255),
-  `age`  INT(3)              DEFAULT 0,
-  PRIMARY KEY (`id`)
-);
-
 INSERT INTO
   `t_test` (`name`, `age`)
 VALUES

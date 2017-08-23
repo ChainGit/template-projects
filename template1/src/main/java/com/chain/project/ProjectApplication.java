@@ -35,4 +35,7 @@ public class ProjectApplication {
         return config.getProperty("app.name") + " " + config.getProperty("app.version")
                 + " [" + config.getProperty("spring.profiles.active") + "]";
     }
+
 }
+
+

@@ -1,13 +1,15 @@
 package com.chain.project.common.converter;
 
-import com.chain.project.common.directory.Constant;
+import com.chain.project.base.entities.BaseEntity;
 import com.chain.project.common.domain.Result;
-import com.chain.project.config.AppConfig;
 import com.chain.utils.ReflectionUtils;
 import com.chain.utils.crypto.CryptoFactoryBean;
 import com.chain.utils.crypto.RSAUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.chain.project.common.directory.Constant;
+import com.chain.project.common.utils.JyComUtils;
+import com.chain.project.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,7 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
             HttpMessageNotWritableException {
 //        logger.info("MyMappingJackson2HttpMessageConverter writeInternal");
 //        super.writeInternal(object, type, outputMessage);
+
         MediaType contentType = outputMessage.getHeaders().getContentType();
         MediaType[] supportedMediaTypes = {MediaType.APPLICATION_JSON, new MediaType("application", "*+json")};
         //只有是application/json时才进行转换
@@ -60,9 +63,14 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
         if (object instanceof Result) {
             Result result = (Result) object;
             resultEncrypt = result.isEncrypt();
-            result.setEncrypt(null);
-            //FIXME: 这个方法暂时不用，况且也不完善
-            //ignoreResultValue(result);
+            String[] ignores = result.getIgnore();
+            if (JyComUtils.isEmpty(ignores))
+                result.setIgnore(JyComUtils.getDefaultIgnoreArray());
+            else
+                result.setIgnore(JyComUtils.concatStringArray(ignores, JyComUtils.getDefaultIgnoreArray()));
+            //FIXME: 这个方法还不完善，暂时不用
+            result.setIgnore(null);//暂时取消所有的忽略
+            ignoreResultValue(result);
             //设置的mapper忽略会忽略Object内的所有value为null的值
             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         }
@@ -84,27 +92,40 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
     }
 
     /**
-     * 根据ignore忽略值，只适合POJO，暂未支持集合以及集合的嵌套
+     * 根据Result的ignore忽略值，只适合Result且Result内的data为BaseEntity的子类，
+     * 暂未支持如集合、集合的嵌套、Map等
      *
      * @param result
      */
     private void ignoreResultValue(Result result) {
-        String[] ignores = result.getIgnore();
-        if (ignores == null || ignores.length < 1)
+        if (JyComUtils.isEmpty(result))
             return;
-        Object data = result.getData();
-        if (data != null) {
-            try {
-                for (String s : ignores) {
-                    Field f = ReflectionUtils.getDeclaredField(data, s);
-                    if (f != null)
-                        //设置成null即可
-                        ReflectionUtils.setField(data, f, null);
+        String[] ignores = result.getIgnore();
+        if (ignores != null && ignores.length > 0) {
+            Object data = result.getData();
+            if (data != null) {
+                if (data instanceof BaseEntity) {
+                    try {
+                        for (String s : ignores) {
+                            Field f = ReflectionUtils.getDeclaredField(data, s);
+                            if (f != null) {
+                                try {
+                                    //设置成null即可
+                                    ReflectionUtils.setField(data, f, null);
+                                } catch (Exception e) {
+                                    //发生错误继续
+                                    continue;
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.error("ignoreResultValue" + e);
+                    }
                 }
-            } catch (Exception e) {
-                logger.error("ignoreResultValue" + e);
             }
         }
+        result.setIgnore(null);
+        result.setEncrypt(null);
     }
 
 }

@@ -1,12 +1,12 @@
 package com.chain.project.test.service.impl;
 
-import com.chain.project.base.service.impl.AbstractService;
-import com.chain.project.common.utils.JyComUtils;
-import com.chain.project.test.entities.Person;
-import com.chain.project.test.mapper.PersonMapper;
+import com.chain.project.test.entities.PersonEntity;
 import com.chain.project.test.service.PersonService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.chain.project.base.service.impl.AbstractService;
+import com.chain.project.common.utils.JyComUtils;
+import com.chain.project.test.mapper.PersonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,25 +14,25 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service("personService")
-public class PersonServiceImpl extends AbstractService<Person, Long> implements PersonService {
+public class PersonServiceImpl extends AbstractService<PersonEntity, Long> implements PersonService {
 
     @Autowired
     private PersonMapper personMapper;
 
     @Override
-    public List<Person> queryListAll() {
+    public List<PersonEntity> queryListAll() {
         return personMapper.queryListAll();
     }
 
     @Override
-    public Person findById(Long id) {
+    public PersonEntity findById(Long id) {
         return personMapper.findById(id);
     }
 
     @Transactional
     @Override
-    public int update(Person person) {
-        int num = personMapper.update(person);
+    public int update(PersonEntity personEntity) {
+        int num = personMapper.update(personEntity);
         JyComUtils.randomDisaster();
         return num;
     }
@@ -47,17 +47,17 @@ public class PersonServiceImpl extends AbstractService<Person, Long> implements 
 
     @Transactional
     @Override
-    public int insert(Person person) {
-        int num = personMapper.insert(person);
+    public int insert(PersonEntity personEntity) {
+        int num = personMapper.insert(personEntity);
         JyComUtils.randomDisaster();
         return num;
     }
 
     @Override
-    public PageInfo<Person> getPage(int currentPageNum, int eachPageRows) {
+    public PageInfo<PersonEntity> getPage(int currentPageNum, int eachPageRows) {
         PageHelper.startPage(currentPageNum, eachPageRows);
-        List<Person> list = this.queryListAll();
-        PageInfo<Person> pageInfo = new PageInfo<>(list);
+        List<PersonEntity> list = this.queryListAll();
+        PageInfo<PersonEntity> pageInfo = new PageInfo<>(list);
         return pageInfo;
     }
 

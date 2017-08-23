@@ -20,7 +20,7 @@ import org.springframework.stereotype.Repository;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Person extends BaseEntity {
+public class PersonEntity extends BaseEntity {
 
     private Long id;
     private String name;

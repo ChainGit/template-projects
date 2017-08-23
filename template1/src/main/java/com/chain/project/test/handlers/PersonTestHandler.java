@@ -1,13 +1,13 @@
 package com.chain.project.test.handlers;
 
+import com.chain.project.test.entities.PersonEntity;
+import com.chain.project.test.service.PersonService;
+import com.github.pagehelper.PageInfo;
 import com.chain.project.base.handlers.BaseHandler;
 import com.chain.project.common.directory.Constant;
 import com.chain.project.common.domain.JsonMap;
 import com.chain.project.common.domain.Result;
 import com.chain.project.common.utils.JyComUtils;
-import com.chain.project.test.entities.Person;
-import com.chain.project.test.service.PersonService;
-import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,9 +38,9 @@ import java.util.List;
 @RequestMapping(value = "/test", method = RequestMethod.POST)
 //相当于Controller+ResponseBody
 @RestController
-public class PersonHandler extends BaseHandler {
+public class PersonTestHandler extends BaseHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(PersonHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(PersonTestHandler.class);
 
     /////////////////////////////////////////////////////////////
     /***以下测试分别在dev和test中进行了测试，prod环境不加载test功能***/
@@ -58,11 +57,11 @@ public class PersonHandler extends BaseHandler {
         System.out.println(jsonMap);
         // throw new RuntimeException("发生错误了1");
         // return null;
-        List<Person> personList = personService.queryListAll();
-        if (JyComUtils.isEmpty(personList)) {
+        List<PersonEntity> personEntityList = personService.queryListAll();
+        if (JyComUtils.isEmpty(personEntityList)) {
             return Result.ok(Result.EMPTY_DATA);
         }
-        return Result.ok(personList);
+        return Result.ok(personEntityList);
     }
 
     //返回不加密数据测试
@@ -71,11 +70,11 @@ public class PersonHandler extends BaseHandler {
         System.out.println(jsonMap);
         // throw new RuntimeException("发生错误了2");
         // return null;
-        List<Person> personList = personService.queryListAll();
-        if (JyComUtils.isEmpty(personList)) {
+        List<PersonEntity> personEntityList = personService.queryListAll();
+        if (JyComUtils.isEmpty(personEntityList)) {
             return Result.ok(Result.EMPTY_DATA).setEncrypt(false);
         }
-        return Result.ok(personList).setEncrypt(false);
+        return Result.ok(personEntityList).setEncrypt(false);
     }
 
     /***增删改查、分页查询、事务（已配置自动开启）的测试***/
@@ -88,19 +87,20 @@ public class PersonHandler extends BaseHandler {
         System.out.println(jsonMap);
         //Jackson会自动转换
         long id = jsonMap.getLong("id");
-        Person person = personService.findById(id);
-        if (JyComUtils.isEmpty(person)) {
+        PersonEntity personEntity = personService.findById(id);
+        if (JyComUtils.isEmpty(personEntity)) {
             Result.fail(Result.EMPTY_DATA).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY);
         }
-        return Result.ok(person, Constant.SUCCESS).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY);
+        return Result.ok(personEntity, Constant.SUCCESS).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY)
+                .setIgnore(new String[]{"age"});
     }
 
     //更新
     @RequestMapping("/update")
     public Result update(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
         System.out.println(jsonMap);
-        Person person = JyComUtils.mapToObject(jsonMap, Person.class);
-        int num = personService.update(person);
+        PersonEntity personEntity = JyComUtils.mapToObject(jsonMap, PersonEntity.class);
+        int num = personService.update(personEntity);
         if (JyComUtils.isPositive(num))
             return Result.ok();
         else
@@ -111,8 +111,8 @@ public class PersonHandler extends BaseHandler {
     @RequestMapping("/insert")
     public Result insert(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
         System.out.println(jsonMap);
-        Person person = JyComUtils.mapToObject(jsonMap, Person.class);
-        int num = personService.insert(person);
+        PersonEntity personEntity = JyComUtils.mapToObject(jsonMap, PersonEntity.class);
+        int num = personService.insert(personEntity);
         if (JyComUtils.isPositive(num))
             return Result.ok();
         else
@@ -136,7 +136,7 @@ public class PersonHandler extends BaseHandler {
     public Result page(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
         int page = jsonMap.getInteger(Constant.CURRENT_PAGE);
         int rows = jsonMap.getInteger(Constant.EACH_PAGE_ROWS);
-        PageInfo<Person> pageInfo = personService.getPage(page, rows);
+        PageInfo<PersonEntity> pageInfo = personService.getPage(page, rows);
         JsonMap outMap = new JsonMap();
         outMap.put(Constant.EACH_PAGE_RECORDS, pageInfo.getList());
         outMap.put(Constant.TOTAL_PAGES, pageInfo.getPages());
@@ -144,42 +144,6 @@ public class PersonHandler extends BaseHandler {
         if (JyComUtils.isEmpty(outMap))
             return Result.ok().setEncrypt(Constant.RESPONSE_PLAIN_JSON_KEY);
         return Result.ok(outMap).setEncrypt(false);
-    }
-
-    /***其他测试***/
-
-    //时间的处理：与前端交互默认是以long型，特殊情况下可以使用字符串
-    @RequestMapping("/time")
-    public Result time(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
-        //传递的是long
-        String time1 = jsonMap.getFormatDateString("t1");
-        System.out.println("time1: " + time1);
-
-        //传递的是满足Constant.TIME_PATTERN的String型时间：如2017-12-01 18:09:27
-        String time2 = jsonMap.getString("t2");
-        System.out.println("time2: " + time2);
-
-        //转换为Date
-        Date date1 = jsonMap.getDate("t1");
-        Date date2 = JyComUtils.parseDateFormString(time2);
-        Date date3 = new Date();
-
-        JsonMap out = new JsonMap();
-        //字符串时间传递
-        out.put("t1", time1);
-        out.put("t2", time2);
-        //传递默认的Date.toString方法
-        out.put("t3_1", date3.toString());
-        //传递格式化的date
-        out.put("t3_2", JyComUtils.toFormatDateString(date3));
-        //传递Java8的新API的toString
-        out.put("t3_3", date3.toInstant().toString());
-
-        //jackson默认转为long
-        out.put("data1", date1);
-        out.put("date2", date2);
-        out.put("date3", date3);
-        return Result.ok(out);
     }
 
 }

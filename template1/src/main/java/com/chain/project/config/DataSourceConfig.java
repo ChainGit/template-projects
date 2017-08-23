@@ -150,10 +150,10 @@ public class DataSourceConfig {
         bean.setConfigLocation(new ClassPathResource(configLocation));
         /** 添加mapper 扫描路径 */
         String CLASS_PATH_PREFIX = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX;
-        String mybatisLocations = "classpath:mapper/**/*.xml";
+        String mybatisLocations = "classpath:mapper/**/*Mapper*.xml";
         //生产环境下不会加载test功能
         if (Constant.PROD_MODE.equals(appConfig.getProperty("spring.profiles.active")))
-            mybatisLocations = "classpath:mapper/*.xml";
+            mybatisLocations = "classpath:mapper/**/*Mapper.xml";
         if (mybatisLocations.startsWith(CLASS_PATH_STRING) || mybatisLocations.startsWith(CLASS_PATH2_STRING))
             mybatisLocations = CLASS_PATH_PREFIX + mybatisLocations.replaceAll(CLASS_PATH_STRING, "");
         PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
@@ -196,7 +196,6 @@ public class DataSourceConfig {
         packages.add(getFull("base"));
         packages.add(getFull("more"));
 
-        packages.add(getFull("unit"));
         return String.join(",", packages);
     }
 

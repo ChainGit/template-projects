@@ -8,29 +8,31 @@
     <!--不要log就是EhcacheCache,默认在日记级别为DEBUG时可以看到-->
     <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
 
-    <select id="findById" parameterType="long" resultType="Person">
+    <select id="findById" parameterType="long" resultType="PersonEntity">
         SELECT *
         FROM t_test
-        WHERE id = #{id}
+        WHERE id = #{id} AND delete_flag = 0
     </select>
 
-    <select id="queryListAll" resultType="Person">
+    <select id="queryListAll" resultType="PersonEntity">
         SELECT *
         FROM t_test
+        WHERE delete_flag = 0
     </select>
 
-    <update id="update" parameterType="Person">
+    <update id="update" parameterType="PersonEntity">
         UPDATE t_test
         SET name = #{name}, age = #{age}
         WHERE id = #{id}
     </update>
 
     <delete id="deleteById" parameterType="long">
-        DELETE FROM t_test
+        UPDATE t_test
+        SET delete_flag = 1
         WHERE id = #{id}
     </delete>
 
-    <insert id="insert" parameterType="Person">
+    <insert id="insert" parameterType="PersonEntity">
         INSERT INTO t_test (name, age) VALUES (#{name}, #{age})
     </insert>
 

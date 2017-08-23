@@ -1,7 +1,7 @@
 package com.chain.project.common.formatter;
 
-import com.chain.project.common.directory.Constant;
 import com.chain.project.common.exception.ChainProjectRuntimeException;
+import com.chain.project.common.directory.Constant;
 import com.chain.project.common.utils.JyComUtils;
 import org.springframework.format.Formatter;
 
@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
-public class CarServerDateFormatter implements Formatter<Date> {
+public class ChainProjectDateFormatter implements Formatter<Date> {
 
     public String print(Date object, Locale locale) {
         return null;
@@ -25,6 +25,8 @@ public class CarServerDateFormatter implements Formatter<Date> {
      */
     public Date parse(String text, Locale locale) {
         Date date = null;
+        if (JyComUtils.isEmpty(text))
+            return date;
         try {
             date = JyComUtils.parseDateFormString(text);
         } catch (Exception e1) {

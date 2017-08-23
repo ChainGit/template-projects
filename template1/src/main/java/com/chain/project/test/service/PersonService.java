@@ -1,22 +1,23 @@
 package com.chain.project.test.service;
 
-import com.chain.project.base.service.BaseService;
-import com.chain.project.test.entities.Person;
+
+import com.chain.project.test.entities.PersonEntity;
 import com.github.pagehelper.PageInfo;
+import com.chain.project.base.service.BaseService;
 
 import java.util.List;
 
-public interface PersonService extends BaseService<Person, Long> {
+public interface PersonService extends BaseService<PersonEntity, Long> {
 
-    List<Person> queryListAll();
+    List<PersonEntity> queryListAll();
 
-    Person findById(Long id);
+    PersonEntity findById(Long id);
 
-    int update(Person person);
+    int update(PersonEntity personEntity);
 
     int deleteById(Long id);
 
-    int insert(Person person);
+    int insert(PersonEntity personEntity);
 
-    PageInfo<Person> getPage(int current, int rows);
+    PageInfo<PersonEntity> getPage(int current, int rows);
 }

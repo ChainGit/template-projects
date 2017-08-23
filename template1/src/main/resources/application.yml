@@ -2,7 +2,7 @@
 ## 开发环境：消息均是默认不加密的（即便设置Result的encrypt为true也不会加密）
 ## 测试和生产环境：消息均是默认加密的（接收时参数key为"ns"，以及返回的Result设置encrypt为false的除外）
 ## 生产环境不加载test测试接口
-# 打包成jar包后，启动命令示例：java -jar -Dspring.profiles.active=dev project.jar
+# 打包成jar包后，启动命令示例：java -jar -Dspring.profiles.active=dev carserver.jar
 # spring-boot推崇只有变化的配置内容才写在外部文件中，更推荐无配置开发（注解配置+自动配置+代码配置）
 # （。＾▽＾）
 spring:
@@ -11,6 +11,8 @@ spring:
   #################################
   profiles:
     active: dev
+    # active: test
+    # active: prod
   #################################
   # 数据源配置
   # 注意：如果要使用mybatis的TypeAliasesPackage，修改DataSourceConfig的getFull即可
@@ -19,7 +21,7 @@ spring:
       druid:
         stat-view-servlet:
           login-username: admin
-          login-password: admin
+          login-password: 123456
           reset-enable: true
 
 # 全局日志配置
@@ -38,5 +40,5 @@ server:
 
 # 显示在主页上的信息
 app:
-  name: Chain Project - Server
+  name: Chain Project Template - Server
   version: v0.0.1

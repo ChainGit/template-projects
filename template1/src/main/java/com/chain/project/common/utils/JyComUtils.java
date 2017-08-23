@@ -81,6 +81,8 @@ public class JyComUtils {
      * @return
      */
     public static String[] concatStringArray(String[] oldArry, String[] newArry) {
+        if (JyComUtils.isEmpty(oldArry) || JyComUtils.isEmpty(newArry))
+            return null;
         int lenOld = oldArry.length;
         int lenNew = newArry.length;
         String[] temp = new String[lenNew + lenOld];
@@ -88,7 +90,7 @@ public class JyComUtils {
         for (; i < lenOld; i++)
             temp[i] = oldArry[i];
         for (; i < lenNew + lenOld; i++)
-            temp[i + lenOld] = newArry[i - lenOld];
+            temp[i] = newArry[i - lenOld];
         return temp;
     }
 
@@ -279,7 +281,7 @@ public class JyComUtils {
      * @return
      */
     public static String[] getDefaultIgnoreArray() {
-        String[] arr = new String[]{"delete_flag", "createTime", "updateTime"};
+        String[] arr = new String[]{"deleteFlag", "createTime", "updateTime"};
         return arr;
     }
 

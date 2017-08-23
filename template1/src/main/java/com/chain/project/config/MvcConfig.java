@@ -3,9 +3,10 @@ package com.chain.project.config;
 import com.chain.project.common.converter.ObjectToJsonStringConverter;
 import com.chain.project.common.converter.StringToJsonMapConverter;
 import com.chain.project.common.exception.ChainProjectRuntimeException;
-import com.chain.project.common.formatter.CarServerDateFormatter;
+import com.chain.project.common.formatter.ChainProjectDateFormatter;
 import com.chain.project.common.intercepter.JsonStringInterceptor;
 import com.chain.project.common.intercepter.MeasurementInterceptor;
+import com.chain.project.common.intercepter.MonitorRequestInterceptor;
 import com.chain.utils.FileDirectoryUtils;
 import com.chain.utils.RandomStringUtils;
 import com.chain.utils.crypto.CryptoFactoryBean;
@@ -82,10 +83,18 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         logger.info("add interceptors");
-        //JsonStringInterceptor自定义拦截器
-        registry.addInterceptor(jsonStringInterceptor()).addPathPatterns("/**");
+        //注意是有先后顺序的
+        //MonitorRequestInterceptor自定义拦截器
+        registry.addInterceptor(monitorRequestInterceptor()).addPathPatterns("/**");
         //MeasurementInterceptor自定义拦截器
         registry.addInterceptor(measurementInterceptor()).addPathPatterns("/**");
+        //JsonStringInterceptor自定义拦截器
+        registry.addInterceptor(jsonStringInterceptor()).addPathPatterns("/**");
+    }
+
+    @Bean
+    public MonitorRequestInterceptor monitorRequestInterceptor() {
+        return new MonitorRequestInterceptor();
     }
 
     @Bean
@@ -178,15 +187,15 @@ public class MvcConfig implements WebMvcConfigurer {
         Set<Formatter> formatters = new LinkedHashSet<>();
         converters.add(stringToJsonMapConverter());
         conversionServiceFactoryBean.setConverters(converters);
-        formatters.add(carServerDateFormatter());
+        formatters.add(chainProjectDateFormatter());
         conversionServiceFactoryBean.setFormatters(formatters);
         return conversionServiceFactoryBean.getObject();
     }
 
 
     @Bean
-    public CarServerDateFormatter carServerDateFormatter() {
-        return new CarServerDateFormatter();
+    public ChainProjectDateFormatter chainProjectDateFormatter() {
+        return new ChainProjectDateFormatter();
     }
 
     @Bean
