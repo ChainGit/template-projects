@@ -13,16 +13,6 @@ public class Constant {
     public static final boolean RESPONSE_ENCRYPT_JSON_KEY = true;
     public static final boolean RESPONSE_PLAIN_JSON_KEY = false;
 
-    //用于返回值
-    public static final String SUCCESS = "success";
-    public static final String FAILURE = "failure";
-    public static final String EMPTY_DATA = "empty data";
-    public static final String NULL = "null";
-
-    public static final String SUCCESS_CN = "成功";
-    public static final String FAILURE_CN = "失败";
-    public static final String EMPTY_DATA_CN = "数据为空";
-
     //用于分页
     public static final String CURRENT_PAGE = "page";
     public static final String EACH_PAGE_ROWS = "rows";
@@ -39,5 +29,8 @@ public class Constant {
     public static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final String TIME_PATTERN = "HH:mm:ss";
+
+    //其他
+    public static final String NULL = "null";
 
 }

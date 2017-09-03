@@ -1,12 +1,12 @@
 package com.chain.project.test.service.impl;
 
-import com.chain.project.test.entities.PersonEntity;
-import com.chain.project.test.service.PersonService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.chain.project.base.service.impl.AbstractService;
-import com.chain.project.common.utils.JyComUtils;
+import com.chain.project.common.utils.ChainProjectUtils;
+import com.chain.project.test.entities.PersonEntity;
 import com.chain.project.test.mapper.PersonMapper;
+import com.chain.project.test.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +33,7 @@ public class PersonServiceImpl extends AbstractService<PersonEntity, Long> imple
     @Override
     public int update(PersonEntity personEntity) {
         int num = personMapper.update(personEntity);
-        JyComUtils.randomDisaster();
+        ChainProjectUtils.randomDisaster();
         return num;
     }
 
@@ -41,7 +41,7 @@ public class PersonServiceImpl extends AbstractService<PersonEntity, Long> imple
     @Override
     public int deleteById(Long id) {
         int num = personMapper.deleteById(id);
-        JyComUtils.randomDisaster();
+        ChainProjectUtils.randomDisaster();
         return num;
     }
 
@@ -49,7 +49,7 @@ public class PersonServiceImpl extends AbstractService<PersonEntity, Long> imple
     @Override
     public int insert(PersonEntity personEntity) {
         int num = personMapper.insert(personEntity);
-        JyComUtils.randomDisaster();
+        ChainProjectUtils.randomDisaster();
         return num;
     }
 

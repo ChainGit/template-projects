@@ -1,15 +1,16 @@
 package com.chain.project.config;
 
-import com.chain.project.common.converter.ObjectToJsonStringConverter;
-import com.chain.project.common.converter.StringToJsonMapConverter;
-import com.chain.project.common.exception.ChainProjectRuntimeException;
-import com.chain.project.common.formatter.ChainProjectDateFormatter;
-import com.chain.project.common.intercepter.JsonStringInterceptor;
-import com.chain.project.common.intercepter.MeasurementInterceptor;
-import com.chain.project.common.intercepter.MonitorRequestInterceptor;
 import com.chain.utils.FileDirectoryUtils;
 import com.chain.utils.RandomStringUtils;
 import com.chain.utils.crypto.CryptoFactoryBean;
+import com.chain.project.common.converter.ObjectToJsonStringConverter;
+import com.chain.project.common.converter.StringToJsonMapConverter;
+import com.chain.project.common.exception.ChainProjectRuntimeException;
+import com.chain.project.common.formatter.CarServerDateFormatter;
+import com.chain.project.common.intercepter.JsonStringInterceptor;
+import com.chain.project.common.intercepter.MeasurementInterceptor;
+import com.chain.project.common.intercepter.MonitorRequestInterceptor;
+import com.chain.project.common.utils.ChainProjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -187,15 +188,15 @@ public class MvcConfig implements WebMvcConfigurer {
         Set<Formatter> formatters = new LinkedHashSet<>();
         converters.add(stringToJsonMapConverter());
         conversionServiceFactoryBean.setConverters(converters);
-        formatters.add(chainProjectDateFormatter());
+        formatters.add(carServerDateFormatter());
         conversionServiceFactoryBean.setFormatters(formatters);
         return conversionServiceFactoryBean.getObject();
     }
 
 
     @Bean
-    public ChainProjectDateFormatter chainProjectDateFormatter() {
-        return new ChainProjectDateFormatter();
+    public CarServerDateFormatter carServerDateFormatter() {
+        return new CarServerDateFormatter();
     }
 
     @Bean
@@ -208,14 +209,36 @@ public class MvcConfig implements WebMvcConfigurer {
         logger.info("create cryptoFactoryBean");
         AppConfig appConfig = appConfig();
         CryptoFactoryBean cryptoFactoryBean = new CryptoFactoryBean();
-        String rsaPublicKeyFile = appConfig.getProperty("app.crypto.rsa-public");
-        String rsaPrivateKeyFile = appConfig.getProperty("app.crypto.rsa-private");
+        String rsaPublicKeyFile = appConfig.getProperty("app.crypto.rsa-public-key");
+        String rsaPrivateKeyFile = appConfig.getProperty("app.crypto.rsa-private-key");
+        String desFirstKeyFile = appConfig.getProperty("app.crypto.des-first-key");
+        String desSecondKeyFile = appConfig.getProperty("app.crypto.des-second-key");
+        String desThirdKeyFile = appConfig.getProperty("app.crypto.des-third-key");
+        String aesKeyFile = appConfig.getProperty("app.crypto.aes-key");
+        String aesIvFile = appConfig.getProperty("app.crypto.aes-iv-key");
         String CLASS_PATH_STRING = "classpath:";
         String CLASS_PATH2_STRING = "classpath*:";
-        rsaPublicKeyFile = getFilePath(rsaPublicKeyFile, CLASS_PATH_STRING, CLASS_PATH2_STRING);
-        rsaPrivateKeyFile = getFilePath(rsaPrivateKeyFile, CLASS_PATH_STRING, CLASS_PATH2_STRING);
-        cryptoFactoryBean.setRsaPublicKeyFilePath(rsaPublicKeyFile);
-        cryptoFactoryBean.setRsaPrivateKeyFilePath(rsaPrivateKeyFile);
+        if (!ChainProjectUtils.isEmpty(rsaPublicKeyFile) && !ChainProjectUtils.isEmpty(rsaPrivateKeyFile)) {
+            rsaPublicKeyFile = getFilePath(rsaPublicKeyFile, CLASS_PATH_STRING, CLASS_PATH2_STRING);
+            rsaPrivateKeyFile = getFilePath(rsaPrivateKeyFile, CLASS_PATH_STRING, CLASS_PATH2_STRING);
+            cryptoFactoryBean.setRsaPublicKeyFilePath(rsaPublicKeyFile);
+            cryptoFactoryBean.setRsaPrivateKeyFilePath(rsaPrivateKeyFile);
+        }
+        if (!ChainProjectUtils.isEmpty(desFirstKeyFile) && !ChainProjectUtils.isEmpty(desSecondKeyFile) &&
+                !ChainProjectUtils.isEmpty(desThirdKeyFile)) {
+            desFirstKeyFile = getFilePath(desFirstKeyFile, CLASS_PATH_STRING, CLASS_PATH2_STRING);
+            desSecondKeyFile = getFilePath(desSecondKeyFile, CLASS_PATH_STRING, CLASS_PATH2_STRING);
+            desThirdKeyFile = getFilePath(desThirdKeyFile, CLASS_PATH_STRING, CLASS_PATH2_STRING);
+            cryptoFactoryBean.setDesFirstKeyFilePath(desFirstKeyFile);
+            cryptoFactoryBean.setDesSecondKeyFilePath(desSecondKeyFile);
+            cryptoFactoryBean.setDesThirdKeyFilePath(desThirdKeyFile);
+        }
+        if (!ChainProjectUtils.isEmpty(aesKeyFile) && !ChainProjectUtils.isEmpty(aesIvFile)) {
+            aesKeyFile = getFilePath(aesKeyFile, CLASS_PATH_STRING, CLASS_PATH2_STRING);
+            aesIvFile = getFilePath(aesIvFile, CLASS_PATH_STRING, CLASS_PATH2_STRING);
+            cryptoFactoryBean.setAesKeyFilePath(aesKeyFile);
+            cryptoFactoryBean.setAesIvFilePath(aesIvFile);
+        }
         return cryptoFactoryBean;
     }
 

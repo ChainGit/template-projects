@@ -22,7 +22,8 @@ import org.springframework.stereotype.Repository;
 @NoArgsConstructor
 public class PersonEntity extends BaseEntity {
 
-    private Long id;
     private String name;
     private Integer age;
+
+
 }

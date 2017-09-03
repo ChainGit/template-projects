@@ -1,7 +1,6 @@
 package com.chain.project.common.domain;
 
-import com.chain.project.common.exception.ChainProjectRuntimeException;
-import com.chain.project.common.utils.JyComUtils;
+import com.chain.project.common.utils.ChainProjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +14,12 @@ import java.util.HashMap;
  * <p>
  * Jackson会在Converter里自动的对常见的基本数据类进行转换值。
  * 但注意{"id":1}和{"id":"1"}不是一个意思，后者只会转成String
+ * <p>
+ * 使用：
+ * 1、getXxx为直接从JsonMap中读取值，比如使用getInteger()，若原先是int型的value值，
+ * 那么能成功读出，如果原先是string型的value值则读取错误。
+ * 2、getParsedXxx为从JsonMap中读取转换值，比如使用getParsedInteger，
+ * 则会先将JsonMap中的值（无论是否是String，如果是null则转为"null"）转为String,然后再进行转换。
  *
  * @author Chain
  */
@@ -35,6 +40,8 @@ public class JsonMap extends HashMap<String, Object> {
             Class<?> objClass = obj.getClass();
             if (objClass.equals(clz)) {
                 return (T) obj;
+            } else if (String.class.equals(clz)) {
+                return (T) String.valueOf(obj);
             } else if (obj instanceof Number) {
                 //jackson默认将int范围内的接收到的值转为int,long范围的是long,float同理
                 //目前只能考虑常见的转换，建议实体类统一使用包装类
@@ -60,6 +67,7 @@ public class JsonMap extends HashMap<String, Object> {
         return null;
     }
 
+    //获取value类型为String的值，注意和parsedXxx的区别
     public String getString(String key) {
         return get(key, String.class);
     }
@@ -84,66 +92,90 @@ public class JsonMap extends HashMap<String, Object> {
         return get(key, Boolean.class);
     }
 
-    public boolean isString(Object obj) {
-        return obj != null && obj instanceof String;
-    }
-
-    public int getParsedInteger(String key) {
-        String s = getCheckedString(key);
-        int value = Integer.parseInt(s);
-        return value;
-    }
-
-
-    public long getParsedLong(String key) {
-        String s = getCheckedString(key);
-        long value = Long.parseLong(s);
-        return value;
-    }
-
-    public float getParsedFloat(String key) {
-        String s = getCheckedString(key);
-        float value = Float.parseFloat(s);
-        return value;
-    }
-
-    public double getParsedDouble(String key) {
-        String s = getCheckedString(key);
-        double value = Double.parseDouble(s);
-        return value;
-    }
-
-    public boolean getParsedBoolean(String key) {
-        String s = getCheckedString(key);
-        boolean value = Boolean.parseBoolean(s);
-        return value;
-    }
-
-    private String getCheckedString(String key) {
-        Object obj = get(key);
-        if (!isString(obj))
-            throw new ChainProjectRuntimeException("map value of '" + key + "' is not a string");
-        String s = (String) obj;
-        return s;
-    }
-
     //本框架中约定时间以long型数与前端交互
     public Date getDate(String key) {
         long longDate = getLong(key);
         return new Date(longDate);
     }
 
+    //------------------------------------------------------------------------------------------------//
+
+    public boolean isString(Object obj) {
+        return obj != null && obj instanceof String;
+    }
+
+    public int getParsedInteger(String key) {
+        String s = getParsedString(key);
+        int value = Integer.parseInt(s);
+        return value;
+    }
+
+
+    public long getParsedLong(String key) {
+        String s = getParsedString(key);
+        long value = Long.parseLong(s);
+        return value;
+    }
+
+    public float getParsedFloat(String key) {
+        String s = getParsedString(key);
+        float value = Float.parseFloat(s);
+        return value;
+    }
+
+    public double getParsedDouble(String key) {
+        String s = getParsedString(key);
+        double value = Double.parseDouble(s);
+        return value;
+    }
+
+    public boolean getParsedBoolean(String key) {
+        String s = getParsedString(key);
+        boolean value = Boolean.parseBoolean(s);
+        return value;
+    }
+
+    public Date getParsedDate(String key) {
+        long time = getParsedLong(key);
+        return new Date(time);
+    }
+
+    //将接收key的value值均转换成String，但null除外
+    public String getParsedString(String key) {
+        Object obj = get(key);
+        String s = null;
+        if (isString(obj)) {
+            s = (String) obj;
+        } else {
+            if (obj != null)
+                s = String.valueOf(obj);
+            // throw new ChainProjectRuntimeException("map value of '" + key + "' is not a string");
+        }
+        return s;
+    }
+
+    //将字符串形式的long转为日期
+    public String getParsedFormatDateString(String key) {
+        Date date = getParsedDate(key);
+        return ChainProjectUtils.toFormatDateString(date);
+    }
+
     //使用Java8的新时间API，也可以使用Joda-Time
     public String getFormatDateString(String key) {
         Date date = getDate(key);
-        return JyComUtils.toFormatDateString(date);
+        return ChainProjectUtils.toFormatDateString(date);
     }
 
     //Java8的新时间API之间是使用新API的类，通过Instant和旧的Date进行转换，DateTimeFormatter和旧的Format进行转换
     //新时间API的类均为无状态的，和String一样，是不可变对象，因此所有的操作均是返回新的对象
     public String getFormatDateString(String key, DateTimeFormatter dateTimeFormatter) {
         Date date = getDate(key);
-        return JyComUtils.toFormatDateString(date, dateTimeFormatter);
+        return ChainProjectUtils.toFormatDateString(date, dateTimeFormatter);
+    }
+
+    public String getParsedFormatDateString(String key, DateTimeFormatter dateTimeFormatter) {
+        Date date = getParsedDate(key);
+        return ChainProjectUtils.toFormatDateString(date, dateTimeFormatter);
     }
 
 }

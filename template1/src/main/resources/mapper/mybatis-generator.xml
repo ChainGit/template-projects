@@ -7,8 +7,7 @@
 <generatorConfiguration>
 
     <!--导入属性配置 -->
-    <properties resource="classpath:mapper/generator.properties">
-    </properties>
+    <properties resource="mapper/generator.properties"/>
 
     <!--指定特定数据库的jdbc驱动jar包的位置 -->
     <classPathEntry location="${jdbc.driverLocation}"/>
@@ -37,7 +36,7 @@
             targetPackage     指定生成的model生成所在的包名
             targetProject     指定在该项目下所在的路径
         -->
-        <javaModelGenerator targetPackage="org.louis.hometutor.po" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.chain.project.temp.entities" targetProject="src/main/java">
             <!-- 是否对model添加 构造函数 -->
             <property name="constructorBased" value="true"/>
 
@@ -48,7 +47,7 @@
             <property name="immutable" value="true"/>
 
             <!-- 给Model添加一个父类 -->
-            <property name="rootClass" value="com.chain.project.base.entities.BaseEntity"/>
+            <property name="rootClass" value=""/>
 
             <!-- 是否对类CHAR类型的列的数据进行trim操作 -->
             <property name="trimStrings" value="true"/>
@@ -56,7 +55,7 @@
         </javaModelGenerator>
 
         <!--Mapper映射文件生成所在的目录 为每一个数据库的表生成对应的SqlMap文件 -->
-        <sqlMapGenerator targetPackage="com.jycar.server.unit.mapper" targetProject="src/main/java">
+        <sqlMapGenerator targetPackage="com.chain.project.temp.mapper" targetProject="src/main/java">
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
 
@@ -66,7 +65,7 @@
             type="MIXEDMAPPER",生成基于注解的Java Model 和相应的Mapper对象
             type="XMLMAPPER",生成SQLMap XML文件和独立的Mapper接口
         -->
-        <javaClientGenerator targetPackage="com.jycar.server.unit.mapper" targetProject="src/main/java"
+        <javaClientGenerator targetPackage="com.chain.project.temp.mapper" targetProject="src/main/java"
                              type="MIXEDMAPPER">
             <property name="enableSubPackages" value=""/>
             <!--
@@ -91,57 +90,57 @@
 
         <table tableName="t_test" schema="car">
 
-            <!--
-                optional   , only for mybatis3 runtime
-                自动生成的键值（identity,或者序列值）
-                如果指定此元素，MBG将会生成<selectKey>元素，然后将此元素插入到SQL Map的<insert> 元素之中
-                sqlStatement 的语句将会返回新的值
-                如果是一个自增主键的话，你可以使用预定义的语句,或者添加自定义的SQL语句. 预定义的值如下:
-                Cloudscape    This will translate to: VALUES IDENTITY_VAL_LOCAL()
-                DB2:      VALUES IDENTITY_VAL_LOCAL()
-                DB2_MF:       SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1
-                Derby:        VALUES IDENTITY_VAL_LOCAL()
-                HSQLDB:   CALL IDENTITY()
-                Informix:     select dbinfo('sqlca.sqlerrd1') from systables where tabid=1
-                MySql:        SELECT LAST_INSERT_ID()
-                SqlServer:    SELECT SCOPE_IDENTITY()
-                SYBASE:   SELECT @@IDENTITY
-                JDBC:     This will configure MBG to generate code for MyBatis3 suport of JDBC standard generated keys. This is a database independent method of obtaining the value from identity columns.
-                identity: 自增主键  If true, then the column is flagged as an identity column and the generated <selectKey> element will be placed after the insert (for an identity column). If false, then the generated <selectKey> will be placed before the insert (typically for a sequence).
-            -->
-            <generatedKey column="" sqlStatement="" identity="" type=""/>
+        <!--
+        optional   , only for mybatis3 runtime
+        自动生成的键值（identity,或者序列值）
+        如果指定此元素，MBG将会生成<selectKey>元素，然后将此元素插入到SQL Map的<insert> 元素之中
+        sqlStatement 的语句将会返回新的值
+        如果是一个自增主键的话，你可以使用预定义的语句,或者添加自定义的SQL语句. 预定义的值如下:
+        Cloudscape    This will translate to: VALUES IDENTITY_VAL_LOCAL()
+        DB2:      VALUES IDENTITY_VAL_LOCAL()
+        DB2_MF:       SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1
+        Derby:        VALUES IDENTITY_VAL_LOCAL()
+        HSQLDB:   CALL IDENTITY()
+        Informix:     select dbinfo('sqlca.sqlerrd1') from systables where tabid=1
+        MySql:        SELECT LAST_INSERT_ID()
+        SqlServer:    SELECT SCOPE_IDENTITY()
+        SYBASE:   SELECT @@IDENTITY
+        JDBC:     This will configure MBG to generate code for MyBatis3 suport of JDBC standard generated keys. This is a database independent method of obtaining the value from identity columns.
+        identity: 自增主键  If true, then the column is flagged as an identity column and the generated <selectKey> element will be placed after the insert (for an identity column). If false, then the generated <selectKey> will be placed before the insert (typically for a sequence).
+        -->
+        <!--<generatedKey column="" sqlStatement="" identity="" type=""/>-->
 
 
-            <!--
-                optional.
-                列的命名规则：
-                MBG使用 <columnRenamingRule> 元素在计算列名的对应 名称之前，先对列名进行重命名，
-                作用：一般需要对BUSI_CLIENT_NO 前的BUSI_进行过滤
-                支持正则表达式
-                searchString 表示要被换掉的字符串
-                replaceString 则是要换成的字符串，默认情况下为空字符串，可选
-            -->
-            <columnRenamingRule searchString="" replaceString=""/>
+        <!--
+        optional.
+        列的命名规则：
+        MBG使用 <columnRenamingRule> 元素在计算列名的对应 名称之前，先对列名进行重命名，
+        作用：一般需要对BUSI_CLIENT_NO 前的BUSI_进行过滤
+        支持正则表达式
+        searchString 表示要被换掉的字符串
+        replaceString 则是要换成的字符串，默认情况下为空字符串，可选
+        -->
+        <!--<columnRenamingRule searchString="" replaceString=""/>-->
 
 
-            <!--
-                optional.告诉 MBG 忽略某一列
-                column，需要忽略的列
-                delimitedColumnName:true ,匹配column的值和数据库列的名称 大小写完全匹配，false 忽略大小写匹配
-                是否限定表的列名，即固定表列在Model中的名称
-            -->
-            <ignoreColumn column="PLAN_ID" delimitedColumnName="true"/>
+        <!--
+        optional.告诉 MBG 忽略某一列
+        column，需要忽略的列
+        delimitedColumnName:true ,匹配column的值和数据库列的名称 大小写完全匹配，false 忽略大小写匹配
+        是否限定表的列名，即固定表列在Model中的名称
+        -->
+        <!--<ignoreColumn column="" delimitedColumnName="true"/>-->
 
-            <!--
-                optional.覆盖MBG对Model 的生成规则
-                column: 数据库的列名
-                javaType: 对应的Java数据类型的完全限定名
-                在必要的时候可以覆盖由JavaTypeResolver计算得到的java数据类型. For some databases, this is necessary to handle "odd" database types (e.g. MySql's unsigned bigint type should be mapped to java.lang.Object).
-                jdbcType:该列的JDBC数据类型(INTEGER, DECIMAL, NUMERIC, VARCHAR, etc.)，该列可以覆盖由JavaTypeResolver计算得到的Jdbc类型，对某些数据库而言，对于处理特定的JDBC 驱动癖好 很有必要(e.g. DB2's LONGVARCHAR type should be mapped to VARCHAR for iBATIS).
-                typeHandler:
-            -->
-            <columnOverride column="" javaType="" jdbcType="" typeHandler="" delimitedColumnName=""/>
+        <!--
+        optional.覆盖MBG对Model 的生成规则
+        column: 数据库的列名
+        javaType: 对应的Java数据类型的完全限定名
+        在必要的时候可以覆盖由JavaTypeResolver计算得到的java数据类型. For some databases, this is necessary to handle "odd" database types (e.g. MySql's unsigned bigint type should be mapped to java.lang.Object).
+        jdbcType:该列的JDBC数据类型(INTEGER, DECIMAL, NUMERIC, VARCHAR, etc.)，该列可以覆盖由JavaTypeResolver计算得到的Jdbc类型，对某些数据库而言，对于处理特定的JDBC 驱动癖好 很有必要(e.g. DB2's LONGVARCHAR type should be mapped to VARCHAR for iBATIS).
+        typeHandler:
+        -->
+        <!--<columnOverride column="" javaType="" jdbcType="" typeHandler="" delimitedColumnName=""/>-->
 
-        </table>
+        <!--</table>-->
     </context>
 </generatorConfiguration>

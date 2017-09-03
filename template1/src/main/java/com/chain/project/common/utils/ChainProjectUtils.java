@@ -1,7 +1,9 @@
 package com.chain.project.common.utils;
 
-import com.chain.project.common.directory.Constant;
 import com.chain.project.common.exception.ChainProjectRuntimeException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.chain.project.common.directory.Constant;
+import com.chain.project.common.exception.ErrorCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,13 +13,16 @@ import javax.imageio.stream.ImageInputStream;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -27,12 +32,16 @@ import java.util.*;
  * @author lsh
  * @author chain
  */
-public class JyComUtils {
+public class ChainProjectUtils {
 
-    private static Logger logger = LoggerFactory.getLogger(JyComUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(ChainProjectUtils.class);
 
     //线程安全的
     private static DateTimeFormatter dateTimeFormatter;
+
+    static {
+        dateTimeFormatter = DateTimeFormatter.ofPattern(Constant.DATETIME_PATTERN);
+    }
 
     public static Boolean isEmpty(List<?> list) {
         return null == list || list.size() == 0;
@@ -40,10 +49,6 @@ public class JyComUtils {
 
     public static Boolean isEmpty(Map<?, ?> map) {
         return null == map || map.size() == 0;
-    }
-
-    static {
-        dateTimeFormatter = DateTimeFormatter.ofPattern(Constant.DATETIME_PATTERN);
     }
 
     public static Boolean isEmpty(String s) {
@@ -81,7 +86,7 @@ public class JyComUtils {
      * @return
      */
     public static String[] concatStringArray(String[] oldArry, String[] newArry) {
-        if (JyComUtils.isEmpty(oldArry) || JyComUtils.isEmpty(newArry))
+        if (ChainProjectUtils.isEmpty(oldArry) || ChainProjectUtils.isEmpty(newArry))
             return null;
         int lenOld = oldArry.length;
         int lenNew = newArry.length;
@@ -181,7 +186,7 @@ public class JyComUtils {
                     Object valObj = map.get(property.getName());
                     if (valObj != null) {
                         Class[] params = setter.getParameterTypes();
-                        if (JyComUtils.isEmpty(params))
+                        if (ChainProjectUtils.isEmpty(params))
                             continue;
                         Class<?> valObjClass = valObj.getClass();
                         Class<?> param0Class = params[0];
@@ -312,7 +317,56 @@ public class JyComUtils {
         // 3/10的异常发生率
         if (r % 4 == 0) {
             logger.error("random disaster");
-            throw new ChainProjectRuntimeException("==== dont't worry, just a random disaster ====");
+            throw new ChainProjectRuntimeException(ErrorCode.RANDOM_DISASTER, "==== dont't worry, just a random disaster ====");
         }
+    }
+
+    /**
+     * 获得两个日期之间的天数差
+     *
+     * @param fDate
+     * @param oDate
+     * @return
+     */
+    public static int daysOfTwo(Date fDate, Date oDate) {
+        LocalDate flocalDate = fDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate olocalDate = oDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Period period = Period.between(flocalDate, olocalDate);
+        int days = period.getDays();
+        return days;
+    }
+
+    /**
+     * 发起Url并获取到返回的json
+     *
+     * @param sUrl
+     * @param method
+     * @return
+     * @throws IOException
+     */
+    public static Map<String, Object> getJsonMapFromUrl(String sUrl, String method) throws IOException {
+        URL url = new URL(sUrl);
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setRequestMethod(method);
+        httpURLConnection.connect();
+        InputStream inputStream = httpURLConnection.getInputStream();
+        byte[] buf = new byte[8 * 1024];
+        int len = -1;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        while ((len = inputStream.read(buf)) != -1) {
+            baos.write(buf, 0, len);
+        }
+        baos.flush();
+        String res = baos.toString();
+        baos.close();
+        httpURLConnection.disconnect();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> resMap = objectMapper.readValue(res, HashMap.class);
+        return resMap;
+    }
+
+    public static Map<String, Object> getJsonMapFromUrl(String sUrl) throws IOException {
+        return getJsonMapFromUrl(sUrl, "GET");
     }
 }

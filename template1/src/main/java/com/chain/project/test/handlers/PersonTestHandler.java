@@ -1,13 +1,16 @@
 package com.chain.project.test.handlers;
 
+import com.chain.project.base.handlers.BaseHandler;
+import com.chain.project.common.domain.ApiUsage;
+import com.chain.project.common.exception.DoRollBack;
+import com.chain.project.common.validator.JsonMapValidator;
 import com.chain.project.test.entities.PersonEntity;
 import com.chain.project.test.service.PersonService;
 import com.github.pagehelper.PageInfo;
-import com.chain.project.base.handlers.BaseHandler;
 import com.chain.project.common.directory.Constant;
 import com.chain.project.common.domain.JsonMap;
 import com.chain.project.common.domain.Result;
-import com.chain.project.common.utils.JyComUtils;
+import com.chain.project.common.utils.ChainProjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,28 +56,34 @@ public class PersonTestHandler extends BaseHandler {
 
     //返回加密数据测试
     @RequestMapping("/encrypt")
+    @ApiUsage("测试加密和加密的返回数据")
     public Result encrypt(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
+        JsonMapValidator.valid(jsonMap);
+
         System.out.println(jsonMap);
         // throw new RuntimeException("发生错误了1");
         // return null;
         List<PersonEntity> personEntityList = personService.queryListAll();
-        if (JyComUtils.isEmpty(personEntityList)) {
+        if (ChainProjectUtils.isEmpty(personEntityList)) {
             return Result.ok(Result.EMPTY_DATA);
         }
-        return Result.ok(personEntityList);
+        return Result.ok(personEntityList, Result.SUCCESS);
     }
 
     //返回不加密数据测试
     @RequestMapping("/plain")
+    @ApiUsage("测试加密和不加密的返回数据")
     public Result plain(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
+        JsonMapValidator.valid(jsonMap);
+
         System.out.println(jsonMap);
         // throw new RuntimeException("发生错误了2");
         // return null;
         List<PersonEntity> personEntityList = personService.queryListAll();
-        if (JyComUtils.isEmpty(personEntityList)) {
+        if (ChainProjectUtils.isEmpty(personEntityList)) {
             return Result.ok(Result.EMPTY_DATA).setEncrypt(false);
         }
-        return Result.ok(personEntityList).setEncrypt(false);
+        return Result.ok(personEntityList, Result.SUCCESS).setEncrypt(false);
     }
 
     /***增删改查、分页查询、事务（已配置自动开启）的测试***/
@@ -83,57 +92,73 @@ public class PersonTestHandler extends BaseHandler {
 
     //查找(规范为GET，这里使用POST)
     @RequestMapping("/find")
+    @ApiUsage(value = "测试查找", param = {"id"}, resultDesc = "找到的PersonEntity")
     public Result find(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
+        JsonMapValidator.valid(jsonMap);
+
         System.out.println(jsonMap);
         //Jackson会自动转换
         long id = jsonMap.getLong("id");
         PersonEntity personEntity = personService.findById(id);
-        if (JyComUtils.isEmpty(personEntity)) {
+        if (ChainProjectUtils.isEmpty(personEntity)) {
             Result.fail(Result.EMPTY_DATA).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY);
         }
-        return Result.ok(personEntity, Constant.SUCCESS).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY)
+        return Result.ok(personEntity, Result.SUCCESS).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY)
                 .setIgnore(new String[]{"age"});
     }
 
     //更新
     @RequestMapping("/update")
+    @ApiUsage(value = "测试更新", param = {"id"}, optional = {"name", "age"}, resultDesc = "更新结果")
     public Result update(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
+        JsonMapValidator.valid(jsonMap);
+
         System.out.println(jsonMap);
-        PersonEntity personEntity = JyComUtils.mapToObject(jsonMap, PersonEntity.class);
+        PersonEntity personEntity = ChainProjectUtils.mapToObject(jsonMap, PersonEntity.class);
         int num = personService.update(personEntity);
-        if (JyComUtils.isPositive(num))
+        if (ChainProjectUtils.isPositive(num))
             return Result.ok();
         else
-            return Result.fail();
+            throw new DoRollBack("更新失败");
     }
 
     //增加
     @RequestMapping("/insert")
+    @ApiUsage(value = "测试增加", param = {"name", "age"}, resultDesc = "增加结果")
     public Result insert(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
+        JsonMapValidator.valid(jsonMap);
+
         System.out.println(jsonMap);
-        PersonEntity personEntity = JyComUtils.mapToObject(jsonMap, PersonEntity.class);
+        PersonEntity personEntity = ChainProjectUtils.mapToObject(jsonMap, PersonEntity.class);
         int num = personService.insert(personEntity);
-        if (JyComUtils.isPositive(num))
+        if (ChainProjectUtils.isPositive(num))
             return Result.ok();
         else
-            return Result.fail();
+            throw new DoRollBack("增加失败");
     }
 
     //删除
     @RequestMapping("/delete")
+    @ApiUsage(value = "测试删除", param = "id", resultDesc = "删除结果")
     public Result delete(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
+        JsonMapValidator.valid(jsonMap);
+
         System.out.println(jsonMap);
         long id = jsonMap.get("id", Long.class);
         int num = personService.deleteById(id);
-        if (JyComUtils.isPositive(num))
+        if (ChainProjectUtils.isPositive(num))
             return Result.ok();
         else
-            return Result.fail();
+            throw new DoRollBack("删除失败");
     }
 
     //分页查询(使用PageHelper)
     @RequestMapping(value = "/page")
+    @ApiUsage(value = "测试分页", param = {"page", "rows"},
+            paramDesc = {"需要的页数", "每页显示的行数"}, resultDesc = "分页查询的结果")
     public Result page(@RequestAttribute(Constant.JSON_MAP) JsonMap jsonMap) {
+        JsonMapValidator.valid(jsonMap);
+
         int page = jsonMap.getInteger(Constant.CURRENT_PAGE);
         int rows = jsonMap.getInteger(Constant.EACH_PAGE_ROWS);
         PageInfo<PersonEntity> pageInfo = personService.getPage(page, rows);
@@ -141,9 +166,9 @@ public class PersonTestHandler extends BaseHandler {
         outMap.put(Constant.EACH_PAGE_RECORDS, pageInfo.getList());
         outMap.put(Constant.TOTAL_PAGES, pageInfo.getPages());
         outMap.put(Constant.TOTAL_RECORDS, pageInfo.getTotal());
-        if (JyComUtils.isEmpty(outMap))
+        if (ChainProjectUtils.isEmpty(outMap))
             return Result.ok().setEncrypt(Constant.RESPONSE_PLAIN_JSON_KEY);
-        return Result.ok(outMap).setEncrypt(false);
+        return Result.ok(outMap, Result.SUCCESS).setEncrypt(false);
     }
 
 }

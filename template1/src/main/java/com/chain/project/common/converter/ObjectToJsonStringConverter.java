@@ -1,15 +1,14 @@
 package com.chain.project.common.converter;
 
-import com.chain.project.base.entities.BaseEntity;
-import com.chain.project.common.domain.Result;
+import com.chain.project.config.AppConfig;
 import com.chain.utils.ReflectionUtils;
-import com.chain.utils.crypto.CryptoFactoryBean;
-import com.chain.utils.crypto.RSAUtils;
+import com.chain.utils.crypto.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.chain.project.base.entities.BaseEntity;
 import com.chain.project.common.directory.Constant;
-import com.chain.project.common.utils.JyComUtils;
-import com.chain.project.config.AppConfig;
+import com.chain.project.common.domain.Result;
+import com.chain.project.common.utils.ChainProjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,12 +63,14 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
             Result result = (Result) object;
             resultEncrypt = result.isEncrypt();
             String[] ignores = result.getIgnore();
-            if (JyComUtils.isEmpty(ignores))
-                result.setIgnore(JyComUtils.getDefaultIgnoreArray());
+            if (ChainProjectUtils.isEmpty(ignores))
+                result.setIgnore(ChainProjectUtils.getDefaultIgnoreArray());
             else
-                result.setIgnore(JyComUtils.concatStringArray(ignores, JyComUtils.getDefaultIgnoreArray()));
+                result.setIgnore(ChainProjectUtils.concatStringArray(ignores, ChainProjectUtils.getDefaultIgnoreArray()));
+
             //FIXME: 这个方法还不完善，暂时不用
             result.setIgnore(null);//暂时取消所有的忽略
+
             ignoreResultValue(result);
             //设置的mapper忽略会忽略Object内的所有value为null的值
             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -78,8 +79,7 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
         String json0 = mapper.writeValueAsString(object);
         String json = json0;
         if (appConfig.isEncrypt() && resultEncrypt) {
-            RSAUtils rsaUtils = cryptoFactoryBean.getRsaUtils(true);
-            json = rsaUtils.encryptByPrivateKey(json0);
+            json = encrypt(json0, true);
         }
         OutputStream body = outputMessage.getBody();
         body.write(json.getBytes());
@@ -88,7 +88,51 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
         //非生成环境下打印返回的原始非加密数据（不是打印一切返回的数据的意思）
         if (!Constant.PROD_MODE.equals(appConfig.getProperty("spring.profiles.active"))) {
             logger.info("Response Data: " + json0);
+            if (appConfig.isEncrypt() &&
+                    Constant.TEST_MODE.equals(appConfig.getProperty("spring.profiles.active"))) {
+                logger.info("Response after encrypt data: \n" + json);
+            }
         }
+    }
+
+    //根据配置文件的加密选项进行加密
+    private String encrypt(String s, boolean singleTon) {
+        String sendMode = appConfig.getProperty("app.crypto.send-default-mode");
+        if (ChainProjectUtils.isEmpty(sendMode))
+            return s;
+        switch (sendMode) {
+            case "aes": {
+                AESUtils aesUtils = cryptoFactoryBean.getAesUtils(singleTon);
+                s = aesUtils.encrypt(s);
+                break;
+            }
+            case "des": {
+                DESUtils desUtils = cryptoFactoryBean.getDesUtils(singleTon);
+                s = desUtils.encrypt(s);
+                break;
+            }
+            case "base64": {
+                s = Base64Encoder.encode(s);
+                break;
+            }
+            case "rsa-pri": {
+                RSAUtils rsaUtils = cryptoFactoryBean.getRsaUtils(singleTon);
+                s = rsaUtils.encryptByPrivateKey(s);
+                break;
+            }
+            case "rsa-pub": {
+                RSAUtils rsaUtils = cryptoFactoryBean.getRsaUtils(singleTon);
+                s = rsaUtils.encryptByPublicKey(s);
+                break;
+            }
+            case "md5": {
+                s = MD5Utils.encrypt(s);
+                break;
+            }
+            //case "none":
+            //default:
+        }
+        return s;
     }
 
     /**
@@ -98,7 +142,7 @@ public class ObjectToJsonStringConverter extends MappingJackson2HttpMessageConve
      * @param result
      */
     private void ignoreResultValue(Result result) {
-        if (JyComUtils.isEmpty(result))
+        if (ChainProjectUtils.isEmpty(result))
             return;
         String[] ignores = result.getIgnore();
         if (ignores != null && ignores.length > 0) {

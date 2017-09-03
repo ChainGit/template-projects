@@ -9,6 +9,7 @@ import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
 import com.alibaba.druid.wall.WallFilter;
 import com.chain.project.base.mapper.BaseMapper;
 import com.chain.project.common.directory.Constant;
+import com.chain.project.common.utils.ChainProjectUtils;
 import com.chain.utils.crypto.CryptoFactoryBean;
 import com.chain.utils.crypto.RSAUtils;
 import com.github.pagehelper.PageInterceptor;
@@ -189,12 +190,20 @@ public class DataSourceConfig {
     private String getMybatisTypeAliasesPackage() {
         logger.info("getMybatisTypeAliasesPackage");
         List<String> packages = new ArrayList<>();
+
+        String alias = appConfig.getProperty("app.mybatis-alias.package");
+        //为空则设置一个不存在entities的目录即可
+        if (ChainProjectUtils.isEmpty(alias))
+            alias = "common";
+
+        String[] as = alias.split(",");
+
         String mode = appConfig.getProperty("spring.profiles.active");
-        if (!Constant.PROD_MODE.equals(mode))
-            packages.add(getFull("test"));
-        //TODO 不要忘记修改这里
-        packages.add(getFull("base"));
-        packages.add(getFull("more"));
+        for (String s : as) {
+            if ("test".equals(s) && Constant.PROD_MODE.equals(mode))
+                continue;
+            packages.add(getFull(s));
+        }
 
         return String.join(",", packages);
     }

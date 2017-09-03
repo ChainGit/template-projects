@@ -29,11 +29,16 @@ public class ProjectApplication {
         SpringApplication.run(ProjectApplication.class, args);
     }
 
+    private static String info;
+
     @RequestMapping("/")
     public String index() {
-        logger.info("application start success!");
-        return config.getProperty("app.name") + " " + config.getProperty("app.version")
-                + " [" + config.getProperty("spring.profiles.active") + "]";
+        if (info == null) {
+            logger.info("application start success!");
+            info = config.getProperty("app.name") + " " + config.getProperty("app.version")
+                    + " [" + config.getProperty("spring.profiles.active") + "]";
+        }
+        return info;
     }
 
 }

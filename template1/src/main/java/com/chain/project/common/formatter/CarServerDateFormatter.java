@@ -1,15 +1,15 @@
 package com.chain.project.common.formatter;
 
 import com.chain.project.common.exception.ChainProjectRuntimeException;
+import com.chain.project.common.utils.ChainProjectUtils;
 import com.chain.project.common.directory.Constant;
-import com.chain.project.common.utils.JyComUtils;
 import org.springframework.format.Formatter;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
-public class ChainProjectDateFormatter implements Formatter<Date> {
+public class CarServerDateFormatter implements Formatter<Date> {
 
     public String print(Date object, Locale locale) {
         return null;
@@ -25,18 +25,18 @@ public class ChainProjectDateFormatter implements Formatter<Date> {
      */
     public Date parse(String text, Locale locale) {
         Date date = null;
-        if (JyComUtils.isEmpty(text))
+        if (ChainProjectUtils.isEmpty(text))
             return date;
         try {
-            date = JyComUtils.parseDateFormString(text);
+            date = ChainProjectUtils.parseDateFormString(text);
         } catch (Exception e1) {
             try {
                 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(Constant.DATE_PATTERN);
-                date = JyComUtils.parseDateFormString(text, dateTimeFormatter);
+                date = ChainProjectUtils.parseDateFormString(text, dateTimeFormatter);
             } catch (Exception e2) {
                 try {
                     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(Constant.TIME_PATTERN);
-                    date = JyComUtils.parseDateFormString(text, dateTimeFormatter);
+                    date = ChainProjectUtils.parseDateFormString(text, dateTimeFormatter);
                 } catch (Exception e3) {
                     throw new ChainProjectRuntimeException("can not parse string to date/time/datetime");
                 }

@@ -22,6 +22,9 @@ public class AppConfig {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private MoreConfig moreConfig;
+
     public AppConfig() {
         logger.info("AppConfig constructor");
     }
@@ -44,5 +47,13 @@ public class AppConfig {
 
     public void setEncrypt(boolean encrypt) {
         this.encrypt = encrypt;
+    }
+
+    public MoreConfig getMoreConfig() {
+        return moreConfig;
+    }
+
+    public void setMoreConfig(MoreConfig moreConfig) {
+        this.moreConfig = moreConfig;
     }
 }

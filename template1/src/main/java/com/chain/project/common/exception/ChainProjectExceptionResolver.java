@@ -18,8 +18,21 @@ public class ChainProjectExceptionResolver {
     @ExceptionHandler({Exception.class})
     @ResponseBody
     public Result exception(Exception e) {
-        logger.error("===== !!! [EXCEPTION] !!! =====", e);
-        //默认返回的是加密的错误结果Result
-        return Result.fail();
+        //手动回滚的异常处理，只是简单的打印信息
+        if (e instanceof DoRollBack) {
+            logger.info("do rollback: " + e.getMessage());
+            // TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return Result.fail("错误: " + ErrorCode.ROLL_BACK + ",原因: " + e.getMessage(), Result.ERROR);
+        } else {
+            int errorCode = ErrorCode.DEFAULT;
+            if (e instanceof ChainProjectException)
+                errorCode = ((ChainProjectException) e).getErrorCode();
+            else if (e instanceof ChainProjectRuntimeException)
+                errorCode = ((ChainProjectRuntimeException) e).getErrorCode();
+            logger.error("===== !!! [EXCEPTION] !!! =====", e);
+            //默认返回的是加密的错误结果Result
+            return Result.fail("错误: " + errorCode + ",请联系管理员", Result.ERROR);
+        }
     }
+
 }

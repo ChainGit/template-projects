@@ -1,9 +1,9 @@
 package com.chain.project.common.converter;
 
-import com.chain.project.common.exception.ChainProjectRuntimeException;
-import com.chain.project.common.utils.JyComUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.chain.project.common.domain.JsonMap;
+import com.chain.project.common.exception.ChainProjectRuntimeException;
+import com.chain.project.common.utils.ChainProjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
@@ -25,7 +25,7 @@ public class StringToJsonMapConverter implements Converter<String, JsonMap> {
     public JsonMap convert(String s) {
         JsonMap jsonMap = null;
         //在JsonString拦截器处理后，s不会为空
-        if (JyComUtils.isEmpty(s)) {
+        if (ChainProjectUtils.isEmpty(s)) {
 //            jsonMap = new JsonMap();
             throw new ChainProjectRuntimeException("empty json string value");
         }

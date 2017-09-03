@@ -11,13 +11,37 @@ import org.slf4j.LoggerFactory;
  */
 public class Result {
 
-    public static final String SUCCESS = "success";
-    public static final String FAILURE = "failure";
-    public static final String EMPTY_DATA = "empty data";
+    // private static final String DEFAULT_LANGUAGE="EN";
+    private static final String DEFAULT_LANGUAGE = "CN";
+    private static final String SUCCESS_EN = "success";
+    private static final String FAILURE_EN = "failure";
+    private static final String ERROR_EN = "error";
+    private static final String EMPTY_DATA_EN = "empty data";
+    private static final String SUCCESS_CN = "成功";
+    private static final String FAILURE_CN = "失败";
+    private static final String ERROR_CN = "错误";
+    private static final String EMPTY_DATA_CN = "数据为空";
+    public static String SUCCESS;
+    public static String FAILURE;
+    public static String ERROR;
+    public static String EMPTY_DATA;
 
-    public static final String SUCCESS_CN = "成功";
-    public static final String FAILURE_CN = "失败";
-    public static final String EMPTY_DATA_CN = "数据为空";
+    static {
+        switch (DEFAULT_LANGUAGE) {
+            case "CN":
+                SUCCESS = SUCCESS_CN;
+                FAILURE = FAILURE_CN;
+                ERROR = ERROR_CN;
+                EMPTY_DATA = EMPTY_DATA_CN;
+                break;
+            default:
+                SUCCESS = SUCCESS_EN;
+                FAILURE = FAILURE_EN;
+                ERROR = ERROR_EN;
+                EMPTY_DATA = EMPTY_DATA_EN;
+                break;
+        }
+    }
 
     private Logger logger = LoggerFactory.getLogger(Result.class);
     private boolean success = false;
@@ -82,11 +106,12 @@ public class Result {
         return result;
     }
 
-    public static Result fail(Object data) {
-        Result result = fail();
-        result.setData(data);
-        return result;
-    }
+    // 容易与fail(String msg)混淆
+    //    public static Result fail(Object data) {
+    //        Result result = fail();
+    //        result.setData(data);
+    //        return result;
+    //    }
 
     public static Result ok() {
         Result result = new Result();
@@ -129,11 +154,12 @@ public class Result {
         return result;
     }
 
-    public static Result ok(Object data) {
-        Result result = ok();
-        result.setData(data);
-        return result;
-    }
+    // 容易与ok(String msg)混淆
+    //    public static Result ok(Object data) {
+    //        Result result = ok();
+    //        result.setData(data);
+    //        return result;
+    //    }
 
     public Object getData() {
         return data;

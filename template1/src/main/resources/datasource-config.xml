@@ -29,26 +29,18 @@
          timeout:事务超时时间设置 -->
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
-            <tx:method name="insert*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
-            <tx:method name="update*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
-            <tx:method name="delete*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
-            <tx:method name="add*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
-            <tx:method name="log" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
+            <tx:method name="insert*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="update*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="delete*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="add*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="log" propagation="REQUIRED" read-only="false"/>
             <!-- quartz job 方法也需要在事物中执行 -->
-            <tx:method name="pause*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
-            <tx:method name="resume*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
-            <tx:method name="execute*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
-            <tx:method name="interrupt*" propagation="REQUIRED" read-only="false"
-                       rollback-for="com.chain.project.common.exception.ChainProjectException"/>
-            <tx:method name="*" read-only="true"/>
+            <tx:method name="pause*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="resume*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="execute*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="interrupt*" propagation="REQUIRED" read-only="false"/>
+            <!--<tx:method name="*" read-only="true"/>-->
+            <tx:method name="*" read-only="false"/>
         </tx:attributes>
     </tx:advice>
 
