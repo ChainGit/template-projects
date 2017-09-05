@@ -1,9 +1,10 @@
 package com.chain.project.common.utils;
 
-import com.chain.project.common.exception.ChainProjectRuntimeException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.chain.project.common.directory.Constant;
+import com.chain.project.common.exception.ChainProjectRuntimeException;
 import com.chain.project.common.exception.ErrorCode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,10 +14,7 @@ import javax.imageio.stream.ImageInputStream;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -337,6 +335,21 @@ public class ChainProjectUtils {
     }
 
     /**
+     * 获得两个日期之间的秒数差
+     *
+     * @param fDate
+     * @param oDate
+     * @return
+     */
+    public static long secondsOfTwo(Date fDate, Date oDate) {
+        LocalDateTime fromLocalDateTime = fDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime toLocalDateTime = oDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        Duration duration = Duration.between(fromLocalDateTime, toLocalDateTime);
+        Long seconds = duration.getSeconds();
+        return seconds;
+    }
+
+    /**
      * 发起Url并获取到返回的json
      *
      * @param sUrl
@@ -366,7 +379,75 @@ public class ChainProjectUtils {
         return resMap;
     }
 
+    /**
+     * 使用HttpURLConnection发起POST请求，并在body中传递json字符串
+     *
+     * @param sUrl
+     * @param json
+     * @return
+     * @throws Exception
+     */
+    public static HttpURLConnection doPostWithJson(String sUrl, String json) throws Exception {
+        String encoding = "utf-8";
+        URL url = new URL(sUrl);
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setRequestMethod("POST");
+        httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=" + encoding);
+        httpURLConnection.setRequestProperty("Content-Length", String.valueOf(json.length()));
+        httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
+        httpURLConnection.setConnectTimeout(3 * 1000);
+        httpURLConnection.setDoOutput(true);
+        httpURLConnection.setDoInput(true);
+        httpURLConnection.connect();
+        OutputStream outputStream = httpURLConnection.getOutputStream();
+        OutputStreamWriter osw = new OutputStreamWriter(outputStream, encoding);
+        osw.write(json);
+        osw.flush();
+        osw.close();
+        int responseCode = httpURLConnection.getResponseCode();
+        if (responseCode == 200)
+            return httpURLConnection;
+        return null;
+    }
+
     public static Map<String, Object> getJsonMapFromUrl(String sUrl) throws IOException {
         return getJsonMapFromUrl(sUrl, "GET");
+    }
+
+    /**
+     * Object转为JsonString
+     *
+     * @param obj
+     * @return
+     */
+    public static String toJsonString(Object obj) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String s = null;
+        try {
+            s = objectMapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            logger.error("object to json string failed", e);
+        }
+        return s;
+    }
+
+    /**
+     * 开启代理，允许抓包
+     */
+    public static void enableProxy() {
+        System.setProperty("http.proxyHost", "localhost");
+        System.setProperty("http.proxyPort", "8888");
+        System.setProperty("https.proxyHost", "localhost");
+        System.setProperty("https.proxyPort", "8888");
+    }
+
+    /**
+     * 关闭代理
+     */
+    public static void disableProxy() {
+        System.clearProperty("http.proxyHost");
+        System.clearProperty("http.proxyPort");
+        System.clearProperty("https.proxyHost");
+        System.clearProperty("https.proxyPort");
     }
 }
