@@ -22,8 +22,8 @@ public class ChainProjectExceptionResolver {
         if (e instanceof DoRollBack) {
             logger.info("do rollback: " + e.getMessage());
             // TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return Result.fail("错误: " + ErrorCode.ROLL_BACK + ",原因: ["
-                    + ErrorCode.getErrorMsg(ErrorCode.ROLL_BACK) + "] " + e.getMessage(), Result.ERROR);
+            return Result.fail("错误: " + ErrorCode.ROLL_BACK
+                    + " [" + ErrorMsg.DEFAULT + "] ,请联系管理员", Result.ERROR);
         } else {
             int errorCode = ErrorCode.DEFAULT;
             if (e instanceof ChainProjectException)

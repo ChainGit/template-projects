@@ -17,6 +17,14 @@ public class DoRollBack extends RuntimeException {
         super(message, cause);
     }
 
+    public DoRollBack(ErrorDetail error) {
+        this(error.toString());
+    }
+
+    public DoRollBack(ErrorDetail error, Throwable cause) {
+        this(error.toString(), cause);
+    }
+
     public DoRollBack(Throwable cause) {
         super(cause);
     }

@@ -41,10 +41,6 @@ public class ErrorDetail {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ErrorDetail{");
-        sb.append("code=").append(code);
-        sb.append(", msg='").append(msg).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return code + " [" + msg + "]";
     }
 }
