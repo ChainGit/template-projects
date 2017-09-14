@@ -1,16 +1,18 @@
 package com.chain.project.test.handlers;
 
 import com.chain.project.base.handlers.BaseHandler;
+import com.chain.project.common.directory.Constant;
 import com.chain.project.common.domain.ApiUsage;
+import com.chain.project.common.domain.JsonMap;
+import com.chain.project.common.domain.Result;
 import com.chain.project.common.exception.DoRollBack;
+import com.chain.project.common.exception.ErrorCode;
+import com.chain.project.common.exception.ErrorDetail;
+import com.chain.project.common.utils.ChainProjectUtils;
 import com.chain.project.common.validator.JsonMapValidator;
 import com.chain.project.test.entities.PersonEntity;
 import com.chain.project.test.service.PersonService;
 import com.github.pagehelper.PageInfo;
-import com.chain.project.common.directory.Constant;
-import com.chain.project.common.domain.JsonMap;
-import com.chain.project.common.domain.Result;
-import com.chain.project.common.utils.ChainProjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +103,7 @@ public class PersonTestHandler extends BaseHandler {
         long id = jsonMap.getLong("id");
         PersonEntity personEntity = personService.findById(id);
         if (ChainProjectUtils.isEmpty(personEntity)) {
-            Result.fail(Result.EMPTY_DATA).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY);
+            Result.ok(Result.EMPTY_DATA).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY);
         }
         return Result.ok(personEntity, Result.SUCCESS).setEncrypt(Constant.RESPONSE_ENCRYPT_JSON_KEY)
                 .setIgnore(new String[]{"age"});
@@ -119,7 +121,7 @@ public class PersonTestHandler extends BaseHandler {
         if (ChainProjectUtils.isPositive(num))
             return Result.ok();
         else
-            throw new DoRollBack("更新失败");
+            throw new DoRollBack(ErrorDetail.of(ErrorCode.BUSINESS, "更新失败"));
     }
 
     //增加
@@ -134,7 +136,7 @@ public class PersonTestHandler extends BaseHandler {
         if (ChainProjectUtils.isPositive(num))
             return Result.ok();
         else
-            throw new DoRollBack("增加失败");
+            throw new DoRollBack(ErrorDetail.of(ErrorCode.BUSINESS, "增加失败"));
     }
 
     //删除
@@ -149,7 +151,7 @@ public class PersonTestHandler extends BaseHandler {
         if (ChainProjectUtils.isPositive(num))
             return Result.ok();
         else
-            throw new DoRollBack("删除失败");
+            throw new DoRollBack(ErrorDetail.of(ErrorCode.BUSINESS, "删除失败"));
     }
 
     //分页查询(使用PageHelper)
@@ -167,7 +169,7 @@ public class PersonTestHandler extends BaseHandler {
         outMap.put(Constant.TOTAL_PAGES, pageInfo.getPages());
         outMap.put(Constant.TOTAL_RECORDS, pageInfo.getTotal());
         if (ChainProjectUtils.isEmpty(outMap))
-            return Result.ok().setEncrypt(Constant.RESPONSE_PLAIN_JSON_KEY);
+            return Result.ok(Result.EMPTY_DATA).setEncrypt(Constant.RESPONSE_PLAIN_JSON_KEY);
         return Result.ok(outMap, Result.SUCCESS).setEncrypt(false);
     }
 
