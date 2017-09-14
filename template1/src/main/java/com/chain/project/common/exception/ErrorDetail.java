@@ -8,35 +8,42 @@ public class ErrorDetail {
     private int code;
     private String msg;
 
-    public ErrorDetail() {
-        this.code = ErrorCode.DEFAULT;
-        this.msg = ErrorCode.getErrorMsg(code);
+    {
+        code = ErrorCode.DEFAULT;
+        msg = ErrorCode.getErrorMsg(code);
     }
 
-    public ErrorDetail(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
-    }
+    private ErrorDetail() {
 
-    public ErrorDetail(int code) {
-        this.code = code;
-        this.msg = ErrorCode.getErrorMsg(code);
     }
 
     public int getCode() {
         return code;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public static ErrorDetail setCodeOnly(int code) {
+        ErrorDetail error = new ErrorDetail();
+        error.code = code;
+        error.msg = ErrorCode.getErrorMsg(code);
+        return error;
     }
 
     public String getMsg() {
         return msg;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public static ErrorDetail setMsgOnly(String msg) {
+        ErrorDetail error = new ErrorDetail();
+        error.code = ErrorCode.DEFAULT;
+        error.msg = msg;
+        return error;
+    }
+
+    public static ErrorDetail of(int code, String msg) {
+        ErrorDetail error = new ErrorDetail();
+        error.code = code;
+        error.msg = msg;
+        return error;
     }
 
     @Override
