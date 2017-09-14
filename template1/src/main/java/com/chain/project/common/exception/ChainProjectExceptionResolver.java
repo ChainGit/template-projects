@@ -19,11 +19,11 @@ public class ChainProjectExceptionResolver {
     @ResponseBody
     public Result exception(Exception e) {
         //手动回滚的异常处理，只是简单的打印信息
+        ErrorDetail error = null;
         if (e instanceof DoRollBack) {
             logger.info("do rollback: " + e.getMessage());
             // TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            ErrorDetail error = ErrorDetail.of(ErrorCode.DEFAULT, ErrorMsg.DEFAULT);
-            return Result.fail(error, Result.ERROR);
+            error = ErrorDetail.ofDefault();
         } else {
             int errorCode = ErrorCode.DEFAULT;
             if (e instanceof ChainProjectException)
@@ -32,9 +32,9 @@ public class ChainProjectExceptionResolver {
                 errorCode = ((ChainProjectRuntimeException) e).getErrorCode();
             logger.error("===== !!! [EXCEPTION] !!! =====", e);
             //默认返回的是加密的错误结果Result
-            ErrorDetail error = ErrorDetail.of(errorCode, ErrorCode.getErrorMsg(errorCode));
-            return Result.fail(error, Result.ERROR);
+            error = ErrorDetail.of(errorCode, ErrorCode.getErrorMsg(errorCode));
         }
+        return Result.fail(error, Result.ERROR);
     }
 
 }
