@@ -30,6 +30,7 @@ public class ErrorCode {
 
     static {
         errors = new HashMap<>();
+        errors.put(null, ErrorMsg.DEFAULT);
         errors.put(DEFAULT, ErrorMsg.DEFAULT);
         errors.put(RANDOM_DISASTER, ErrorMsg.RANDOM_DISASTER);
         errors.put(CLIENT, ErrorMsg.CLIENT);
