@@ -1,6 +1,7 @@
 package com.chain.project.common.domain;
 
 
+import com.chain.project.common.exception.ErrorDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,6 +104,12 @@ public class Result {
         result.setData(data);
         result.setMsg(msg);
         result.setIgnore(ignore);
+        return result;
+    }
+
+    public static Result fail(ErrorDetail error) {
+        Result result = fail();
+        result.setData(error);
         return result;
     }
 
