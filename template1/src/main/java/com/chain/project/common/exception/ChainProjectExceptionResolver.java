@@ -22,7 +22,8 @@ public class ChainProjectExceptionResolver {
         if (e instanceof DoRollBack) {
             logger.info("do rollback: " + e.getMessage());
             // TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return Result.fail("错误: " + ErrorCode.ROLL_BACK + ",原因: " + e.getMessage(), Result.ERROR);
+            return Result.fail("错误: " + ErrorCode.ROLL_BACK + ",原因: ["
+                    + ErrorCode.getErrorMsg(ErrorCode.ROLL_BACK) + "] " + e.getMessage(), Result.ERROR);
         } else {
             int errorCode = ErrorCode.DEFAULT;
             if (e instanceof ChainProjectException)
@@ -31,7 +32,8 @@ public class ChainProjectExceptionResolver {
                 errorCode = ((ChainProjectRuntimeException) e).getErrorCode();
             logger.error("===== !!! [EXCEPTION] !!! =====", e);
             //默认返回的是加密的错误结果Result
-            return Result.fail("错误: " + errorCode + ",请联系管理员", Result.ERROR);
+            return Result.fail("错误: " + errorCode + " ["
+                    + ErrorCode.getErrorMsg(errorCode) + "] " + ",请联系管理员", Result.ERROR);
         }
     }
 
