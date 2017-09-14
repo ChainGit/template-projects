@@ -18,6 +18,11 @@ public class ErrorDetail {
         this.msg = msg;
     }
 
+    public ErrorDetail(int code) {
+        this.code = code;
+        this.msg = ErrorCode.getErrorMsg(code);
+    }
+
     public int getCode() {
         return code;
     }
