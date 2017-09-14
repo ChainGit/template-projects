@@ -1,6 +1,11 @@
 package com.chain.project.common.exception;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ErrorCode {
+
+    private static Map<Integer, String> errors = null;
 
     //默认错误
     public static final int DEFAULT = 10000;
@@ -22,5 +27,20 @@ public class ErrorCode {
 
     //事务回滚
     public static final int ROLL_BACK = 10015;
+
+    static {
+        errors = new HashMap<>();
+        errors.put(DEFAULT, ErrorMsg.DEFAULT);
+        errors.put(RANDOM_DISASTER, ErrorMsg.RANDOM_DISASTER);
+        errors.put(CLIENT, ErrorMsg.CLIENT);
+        errors.put(SERVER, ErrorMsg.SERVER);
+        errors.put(PARAM_IN, ErrorMsg.PARAM_IN);
+        errors.put(BUSINESS, ErrorMsg.BUSINESS);
+        errors.put(ROLL_BACK, ErrorMsg.ROLL_BACK);
+    }
+
+    public static String getErrorMsg(int errorCode) {
+        return errors.get(errorCode);
+    }
 
 }
