@@ -46,6 +46,11 @@ public class ErrorDetail {
         return error;
     }
 
+    public static ErrorDetail ofDefault() {
+        ErrorDetail error = new ErrorDetail();
+        return error;
+    }
+
     @Override
     public String toString() {
         return code + " [" + msg + "]";
